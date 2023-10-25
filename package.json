@@ -7,7 +7,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "prettier:write": "pretty-quick --staged",
+    "lint": "eslint --fix --ext .js ."
   },
   "repository": {
     "type": "git",
@@ -25,7 +29,12 @@
   },
   "devDependencies": {
     "cz-conventional-changelog": "^3.3.0",
-    "nodemon": "^3.0.1"
+    "eslint": "^8.52.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "nodemon": "^3.0.1",
+    "prettier": "3.0.3"
   },
   "config": {
     "commitizen": {
