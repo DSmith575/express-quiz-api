@@ -1,0 +1,35 @@
+{
+  "name": "s2-23-id608001-project-2-dsmith575",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "commit": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/otago-polytechnic-bit-courses/s2-23-id608001-project-2-DSmith575.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/otago-polytechnic-bit-courses/s2-23-id608001-project-2-DSmith575/issues"
+  },
+  "homepage": "https://github.com/otago-polytechnic-bit-courses/s2-23-id608001-project-2-DSmith575#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
+    "nodemon": "^3.0.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
