@@ -1,15 +1,5 @@
-/**
- * @description User register and login functions
- * @file auth.js
- * @author Deacon Smith
- * @created 4/11/2023
- * @updated 5/11/2023
- */
-
 import bcryptjs from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
-
 import { PrismaClient } from '@prisma/client';
 
 const PROFILE_URL = process.env.USER_PROFILE_PIC;
@@ -71,57 +61,4 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          {
-            username,
-          },
-          {
-            email,
-          },
-        ],
-      },
-    });
-
-    if (!user) {
-      return res.status(401).json({
-        msg: 'Invalid email or username',
-      });
-    }
-
-    const correctPassword = await bcryptjs.compare(password, user.password);
-
-    if (!correctPassword) {
-      return res.status(401).json({
-        msg: 'Invalid password',
-      });
-    }
-
-    const { JWT_SECRET, JWT_LIFETIME } = process.env;
-
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-      },
-      JWT_SECRET,
-      { expiresIn: JWT_LIFETIME },
-    );
-
-    return res.status(200).json({
-      msg: `${user.username} successfully logged in`,
-      token,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
-  }
-};
-
-export { register, login };
+export default register;
