@@ -1,12 +1,9 @@
 /**
  * @description User register and login functions
  * @file auth.js
- *
  * @author Deacon Smith
- *
  * @created 4/11/2023
- * @updated 4/11/2023
- *
+ * @updated 5/11/2023
  */
 
 import bcryptjs from 'bcryptjs';
@@ -45,7 +42,7 @@ const register = async (req, res) => {
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    // Using uuid package to generate a random seed
+    // Using uuid package to generate a random seed for each user created
     const profilePictureSeed = uuidv4();
     const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
 
@@ -75,55 +72,56 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+  try {
+    const { username, email, password } = req.body;
 
-        let user = await prisma.user.findFirst({
-            where: {
-                OR: [
-                    {
-                        username: username,
-                    },
-                    {
-                        email: email,
-                    },
-                ],
-            },
-        });
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            username: username,
+          },
+          {
+            email: email,
+          },
+        ],
+      },
+    });
 
-        if (!user) {
-            return res.status(401).json({
-                msg: "Invalid email or username",
-            });
-        }
-
-        const correctPassword = await bcryptjs.compare(password, user.password);
-
-        if (!correctPassword) {
-            return res.status(401).json({
-                msg: "Invalid password",
-            });
-        }
-
-        const { JWT_SECRET, JWT_LIFETIME } = process.env;
-
-        const token = jwt.sign({
-            id: user.id,
-            username: user.username
-        },
-        JWT_SECRET, { expiresIn: JWT_LIFETIME}
-        );
-
-        return res.status(200).json({
-            msg: `${username} successfully logged in`,
-            token: token,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            msg: error.message,
-        });
+    if (!user) {
+      return res.status(401).json({
+        msg: 'Invalid email or username',
+      });
     }
-};
 
+    const correctPassword = await bcryptjs.compare(password, user.password);
+
+    if (!correctPassword) {
+      return res.status(401).json({
+        msg: 'Invalid password',
+      });
+    }
+
+    const { JWT_SECRET, JWT_LIFETIME } = process.env;
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      JWT_SECRET,
+      { expiresIn: JWT_LIFETIME },
+    );
+
+    return res.status(200).json({
+      msg: `${username} successfully logged in`,
+      token: token,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+};
 
 export { register, login };

@@ -1,12 +1,9 @@
 /**
  * @description Main entry point
  * @file index.js
- *
  * @author Deacon Smith
- *
  * @created 4/11/2023
  * @updated 4/11/2023
- *
  */
 
 import express, { json, urlencoded } from 'express';
@@ -15,7 +12,6 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
 import auth from './routes/auth.js';
-import validateRegister from './middleware/userValidation.js';
 
 const { PORT } = process.env;
 const BASE_URL = 'api';
@@ -44,10 +40,7 @@ app.get('/', (req, res) => {
 
 app.get(`${BASE_PATH}`, (req, res) => {
   return res.json({
-    endpoints: [
-      `${BASE_PATH}/auth/register`,
-      `${BASE_PATH}/auth/login`
-    ],
+    endpoints: [`${BASE_PATH}/auth/register`, `${BASE_PATH}/auth/login`],
   });
 });
 
