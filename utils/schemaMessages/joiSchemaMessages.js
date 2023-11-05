@@ -4,7 +4,7 @@
 * @author Deacon Smith
 * @created 5/11/2023
 * @updated 5/11/2023
-* 
+*
 * @property {Function} base - A template for a basic validation error message.
 * @property {Function} min - A template for a minimum length validation error message.
 * @property {Function} max - A template for a maximum length validation error message.

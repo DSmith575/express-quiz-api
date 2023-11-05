@@ -1,10 +1,10 @@
 /**
-* @description Joi schema validation messages
-* @file registerConsonants.js
-* @author Deacon Smith
-* @created 5/11/2023
-* @updated 5/11/2023
-* 
+ * @description Joi schema validation messages
+ * @file registerConsonants.js
+ * @author Deacon Smith
+ * @created 5/11/2023
+ * @updated 5/11/2023
+ *
  * @property {number} min - The minimum length allowed for the field.
  * @property {number} max - The maximum length allowed for the field.
  * @property {RegExp} pattern - A regular expression pattern that the field should match

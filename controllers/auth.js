@@ -75,14 +75,14 @@ const login = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    let user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
         OR: [
           {
-            username: username,
+            username,
           },
           {
-            email: email,
+            email,
           },
         ],
       },
@@ -114,8 +114,8 @@ const login = async (req, res) => {
     );
 
     return res.status(200).json({
-      msg: `${username} successfully logged in`,
-      token: token,
+      msg: `${user.username} successfully logged in`,
+      token,
     });
   } catch (error) {
     return res.status(500).json({
