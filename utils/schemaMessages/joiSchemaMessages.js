@@ -19,7 +19,6 @@
 * @param {string} fieldName - The name of the field being validated.
 * @param {number} min - The minimum length required.
 * @param {number} max - The maximum length allowed.
-* @returns {string} The error message.
 */
 
 const validationMessages = {

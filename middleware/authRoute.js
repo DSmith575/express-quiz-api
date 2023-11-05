@@ -23,7 +23,7 @@ const authRoute = (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
 
-    const payload = jwt.verify(token, process.env_JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = payload;
 

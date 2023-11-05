@@ -12,6 +12,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
 import auth from './routes/auth.js';
+import profile from './routes/users/profiles.js';
 
 const { PORT } = process.env;
 const BASE_URL = 'api';
@@ -31,6 +32,7 @@ app.use(urlencoded({ extended: false }));
 app.use(json());
 
 app.use(`${BASE_PATH}/auth`, auth);
+app.use(`${BASE_PATH}/auth/users`, profile);
 
 app.get('/', (req, res) => {
   return res.json({
