@@ -15,11 +15,15 @@ const registerFirstLastNameSchemaObj = Joi.string()
   .min(userFirstLastNameMin)
   .max(userFirstLastNameMax)
   .pattern(userFirstLastPattern);
+
 const registerUsernameSchemaObj = Joi.string()
   .min(userNameMin)
   .max(userNameMax)
   .alphanum();
-const registerEmailSchemaObj = Joi.string().email({ tlds: { allow: true } });
+
+
+const emailSchemaObj = Joi.string().email({ tlds: { allow: true } });
+
 const registerPasswordSchemaObj = Joi.string()
   .min(userPasswordMin)
   .max(userPasswordMax)
@@ -27,6 +31,7 @@ const registerPasswordSchemaObj = Joi.string()
 
 const registerFirstLastName = (name) => {
   return registerFirstLastNameSchemaObj.required().messages({
+    'string.base': `${name} name should be a string`,
     'string.min': `${name} name should have a minimum length of ${userFirstLastNameMin}`,
     'string.max': `${name} name should have a maximum length of ${userFirstLastNameMax}`,
     'string.pattern.base': `${name} name should only contain alpha characters`,
@@ -37,6 +42,7 @@ const registerFirstLastName = (name) => {
 
 const registerUsername = (username) => {
   return registerUsernameSchemaObj.required().messages({
+    'string.base': `${username} should be a string`,
     'string.min': `${username} should have a minimum length of ${userNameMin}`,
     'string.max': `${username} should have a maximum length of ${userNameMax}`,
     'string.alphanum': `${username} should only contain alphanumeric characters`,
@@ -46,8 +52,9 @@ const registerUsername = (username) => {
 };
 
 const registerEmail = (email) => {
-  return registerEmailSchemaObj.required().messages({
-    'string.email': `Invalid ${email} format`,
+  return emailSchemaObj.required().messages({
+    'string.base': `${email} should be a string`,
+    'string.email': `${email} format invalid`,
     'string.empty': `${email} should not be empty`,
     'any.required': `${email} is required`,
   });
@@ -55,6 +62,7 @@ const registerEmail = (email) => {
 
 const registerPassword = (password) => {
   return registerPasswordSchemaObj.required().messages({
+    'string.base': `${password} should be a string`,
     'string.min': `${password} should have a minimum length of ${userPasswordMin}`,
     'string.max': `${password} should have a maximum length of ${userPasswordMax}`,
     'string.pattern.base': `${password} should contain at least one numeric and one special character`,
@@ -95,4 +103,11 @@ const validateRegister = (req, res, next) => {
   next();
 };
 
-export default validateRegister;
+
+
+const validateLogin = (req, res, next) => {
+
+  next();
+};
+
+export default { validateRegister, validateLogin };

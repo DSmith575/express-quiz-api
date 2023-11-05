@@ -15,7 +15,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
 import auth from './routes/auth.js';
-import validateRegister from './middleware/registerValidation.js';
+import validateRegister from './middleware/userValidation.js';
 
 const { PORT } = process.env;
 const BASE_URL = 'api';
@@ -34,8 +34,7 @@ app.use(helmet());
 app.use(urlencoded({ extended: false }));
 app.use(json());
 
-app.use(`${BASE_PATH}/auth`, validateRegister, auth);
-// app.use(`${BASE_PATH}/auth`)
+app.use(`${BASE_PATH}/auth`, auth);
 
 app.get('/', (req, res) => {
   return res.json({
@@ -45,7 +44,10 @@ app.get('/', (req, res) => {
 
 app.get(`${BASE_PATH}`, (req, res) => {
   return res.json({
-    endpoints: [`${BASE_PATH}/auth/register`],
+    endpoints: [
+      `${BASE_PATH}/auth/register`,
+      `${BASE_PATH}/auth/login`
+    ],
   });
 });
 

@@ -11,11 +11,12 @@
 
 import { Router } from 'express';
 
-import { register } from '../controllers/auth.js';
+import { register, login } from '../controllers/auth.js';
+import registerValidate from '../middleware/userValidation.js';
 
 const router = Router();
 
-router.route('/register').post(register);
-// router.route("/login").post(login);
+router.route('/register').post(registerValidate.validateRegister,register);
+router.route("/login").post(login);
 
 export default router;
