@@ -7,10 +7,10 @@
  */
 
 import { Router } from 'express';
-import register from '../controllers/auth/authRegister.js';
-import login from '../controllers/auth/authLogin.js';
-import registerValidate from '../middleware/userValidation/registerValidation.js';
-import loginValidate from '../middleware/userValidation/loginValidation.js';
+import register from '../../controllers/auth/login-register/authRegister.js';
+import login from '../../controllers/auth/login-register/authLogin.js';
+import registerValidate from '../../middleware/userValidation/registerValidation.js';
+import loginValidate from '../../middleware/userValidation/loginValidation.js';
 
 const router = Router();
 

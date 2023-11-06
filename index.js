@@ -11,7 +11,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
-import auth from './routes/auth.js';
+import auth from './routes/login-register/auth-process.js';
 import profile from './routes/users/profiles.js';
 
 const { PORT } = process.env;
