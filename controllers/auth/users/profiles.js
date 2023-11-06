@@ -107,7 +107,7 @@ const updateUser = async (req, res) => {
         data: {
           ...restOfBody,
           password: hashedPassword,
-          username: username,
+          username,
         },
       });
     } else {
@@ -115,7 +115,7 @@ const updateUser = async (req, res) => {
         where: { id: Number(req.params.id) },
         data: {
           ...restOfBody,
-          username: username,
+          username,
         },
       });
     }

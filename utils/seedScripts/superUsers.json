@@ -1,0 +1,44 @@
+{
+  "SuperAdmins": [
+    {
+      "firstName": "SuperAdmin",
+      "lastName": "One",
+      "username": "SuAdmin1",
+      "email": "super1@admin.com",
+      "password": "password123",
+      "role": "SUPER_ADMIN_USER"
+    },
+    {
+      "firstName": "SuperAdmin",
+      "lastName": "Two",
+      "username": "SuAdmin2",
+      "email": "super2@admin.com",
+      "password": "password123",
+      "role": "SUPER_ADMIN_USER"
+    },
+    {
+      "firstName": "SuperAdmin",
+      "lastName": "Three",
+      "username": "SuAdmin3",
+      "email": "super3@admin.com",
+      "password": "password123",
+      "role": "SUPER_ADMIN_USER"
+    },
+    {
+      "firstName": "SuperAdmin",
+      "lastName": "Four",
+      "username": "SuAdmin4",
+      "email": "superFour@admin.com",
+      "password": "password123",
+      "role": "SUPER_ADMIN_USER"
+    },
+    {
+      "firstName": "SuperAdmin",
+      "lastName": "Five",
+      "username": "SuAdmin5",
+      "email": "super5@admin.com",
+      "password": "password123",
+      "role": "SUPER_ADMIN_USER"
+    }
+  ]
+}

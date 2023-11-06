@@ -8,13 +8,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file=.env index.js",
     "generate": "npx prisma generate",
-    "migrate": "npx prisma migrate reset && npx prisma migrate dev",
+    "migrate": "npx prisma migrate reset && npx prisma migrate dev --skip-seed",
     "reset": "npx prisma migrate reset",
     "seed": "node prisma/seed.js",
     "commit": "git-cz",
     "pretty:check": "prettier --check .",
     "pretty:fix": "prettier --write .",
     "lint": "eslint --fix --ext .js ."
+  },
+  "prisma": {
+    "seed": "node --env-file=.env prisma/seed.js"
   },
   "repository": {
     "type": "git",
