@@ -13,6 +13,7 @@ import rateLimit from 'express-rate-limit';
 
 import auth from './routes/login-register/auth-process.js';
 import profile from './routes/users/profiles.js';
+import quiz from './routes/quizzes/quiz.js';
 
 const { PORT } = process.env;
 const BASE_URL = 'api';
@@ -33,6 +34,7 @@ app.use(json());
 
 app.use(`${BASE_PATH}/auth`, auth);
 app.use(`${BASE_PATH}/auth/users`, profile);
+app.use(`${BASE_PATH}/auth/quizzes`, quiz);
 
 app.get('/', (req, res) => {
   return res.json({
@@ -42,7 +44,7 @@ app.get('/', (req, res) => {
 
 app.get(`${BASE_PATH}`, (req, res) => {
   return res.json({
-    endpoints: [`${BASE_PATH}/auth/register`, `${BASE_PATH}/auth/login`],
+    endpoints: [`${BASE_PATH}/auth/register`, `${BASE_PATH}/auth/login`, `${BASE_PATH}/auth/quizzes`],
   });
 });
 
