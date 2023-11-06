@@ -67,9 +67,8 @@ const updateUser = async (req, res) => {
       where: { id: Number(req.params.id) },
     });
 
-    const { id, role } = req.user;
-    const username = user.username;
-    const { password, ...restOfBody } = req.body;
+    const { id, role, currentUsername } = req.user;
+    const { username, password, ...restOfBody } = req.body;
 
     if (!user) {
       return res.status(404).json({
@@ -83,6 +82,16 @@ const updateUser = async (req, res) => {
       });
     }
 
+    const currentUserExists = await prisma.user.findUnique({
+      where: { username: String(username) },
+    });
+
+    if (currentUserExists) {
+      return res.status(409).json({
+        msg: `Username already exists`,
+      });
+    }
+
     if (password) {
       const salt = await bcryptjs.genSalt();
       const hashedPassword = await bcryptjs.hash(req.body.password, salt);
@@ -92,6 +101,7 @@ const updateUser = async (req, res) => {
         data: {
           ...restOfBody,
           password: hashedPassword,
+          username: username,
         },
       });
     } else {
@@ -99,12 +109,13 @@ const updateUser = async (req, res) => {
         where: { id: Number(req.params.id) },
         data: {
           ...restOfBody,
+          username: username,
         },
       });
     }
 
     return res.json({
-      msg: `User ${username} successfully updated`,
+      msg: `User ${currentUsername} successfully updated`,
       data: user,
     });
   } catch (error) {
