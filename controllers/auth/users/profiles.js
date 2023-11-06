@@ -139,20 +139,30 @@ const deleteUser = async (req, res) => {
 
     const { id, role } = req.user;
 
+    if (!userID) {
+      return res.status(404).json({
+        msg: `No user found`,
+      });
+    }
+
     if (id !== userID.id && role !== 'SUPER_ADMIN_USER') {
       return res.status(403).json({
         msg: `You are not authorized to access this route`,
       });
     }
 
-    if (!userID) {
-      return res.status(404).json({
-        msg: `No user with the ID ${userID} found`,
+    if (userID.role === 'SUPER_ADMIN_USER') {
+      return res.status(403).json({
+        msg: `You cannot delete this user`,
       });
     }
 
-    return res.json({
-      msg: 'hello',
+    await prisma.user.delete({
+      where: { id: Number(req.params.id) },
+    });
+
+    return res.status(200).json({
+      msg: `User ${userID.username} successfully deleted`,
     });
   } catch (error) {
     return res.status(500).json({
