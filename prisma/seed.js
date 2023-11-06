@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+// assert seems to be required for the JSON file to work? Not to sure why that is.
 import superAdmins from '../utils/seedScripts/superUsers.json' assert { type: 'json' };
 
 const prisma = new PrismaClient();
