@@ -125,4 +125,39 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { getUser, getUsers, updateUser };
+const deleteUser = async (req, res) => {
+  try {
+    const userID = await prisma.user.findUnique({
+      where: { id: Number(req.params.id) },
+    });
+
+    const { id, role } = req.user;
+
+    if (id !== userID.id && role !== 'SUPER_ADMIN_USER') {
+        return res.status(403).json({
+          msg: `You are not authorized to access this route`,
+        });
+      }
+
+    if (!userID) {
+      return res.status(404).json({
+        msg: `No user with the ID ${userID} found`,
+      });
+
+    }
+
+    
+    return res.json({
+      msg: "hello"
+    })
+
+  
+
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+};
+
+export { getUser, getUsers, updateUser, deleteUser };
