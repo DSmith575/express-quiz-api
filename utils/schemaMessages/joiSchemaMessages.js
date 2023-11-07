@@ -32,6 +32,7 @@ const validationMessages = {
   patternAlpha: (fieldName) => `${fieldName} should only contain alpha characters`,
   patternAlphaNum: (fieldName) => `${fieldName} should only contain alphanumeric characters`,
   patternNumSpec: (fieldName) => `${fieldName} should contain at least one numeric and one special character`,
+  valid: (fieldName, object) => `${fieldName} must be of the following ${object}`
 };
 
 export default validationMessages;
