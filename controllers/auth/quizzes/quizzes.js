@@ -15,7 +15,8 @@ const createQuiz = async (req, res) => {
     }
 
     return res.json({
-      msg: name, difficulty
+      msg: name,
+      difficulty,
     });
   } catch (error) {
     return res.status(500).json({

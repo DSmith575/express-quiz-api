@@ -22,7 +22,7 @@
 */
 
 const validationMessages = {
-  base: (fieldName) => `${fieldName} should be a string`,
+  base: (fieldName, type) => `${fieldName} should be a ${type}`,
   email: (fieldName) => `${fieldName} format invalid`,
   min: (fieldName, min) => `${fieldName} should have a minimum length of ${min}`,
   max: (fieldName, max) => `${fieldName} should have a maximum length of ${max}`,
@@ -32,7 +32,7 @@ const validationMessages = {
   patternAlpha: (fieldName) => `${fieldName} should only contain alpha characters`,
   patternAlphaNum: (fieldName) => `${fieldName} should only contain alphanumeric characters`,
   patternNumSpec: (fieldName) => `${fieldName} should contain at least one numeric and one special character`,
-  valid: (fieldName, object) => `${fieldName} must be of the following ${object}`
+  valid: (fieldName, object) => `${fieldName} must be of the following ${object}`,
 };
 
 export default validationMessages;

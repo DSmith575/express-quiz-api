@@ -16,9 +16,9 @@ const registerPasswordSchemaObj = Joi.string()
   .max(registerValues.PASSWORD.max)
   .pattern(registerValues.PASSWORD.pattern);
 
-const registerFirstLastName = (field) => {
+const registerFirstLastName = (field, string) => {
   return registerFirstLastNameSchemaObj.required().messages({
-    'string.base': schemaMessages.base(field),
+    'string.base': schemaMessages.base(field, string),
     'string.min': schemaMessages.min(field, registerValues.FIRST_LAST_NAME.min),
     'string.max': schemaMessages.max(field, registerValues.FIRST_LAST_NAME.max),
     'string.pattern.base': schemaMessages.patternAlpha(field),
@@ -27,9 +27,9 @@ const registerFirstLastName = (field) => {
   });
 };
 
-const registerUsername = (username) => {
+const registerUsername = (username, string) => {
   return registerUsernameSchemaObj.required().messages({
-    'string.base': schemaMessages.base(username),
+    'string.base': schemaMessages.base(username, string),
     'string.min': schemaMessages.min(username, registerValues.USERNAME.min),
     'string.max': schemaMessages.max(username, registerValues.USERNAME.max),
     'string.alphanum': schemaMessages.patternAlphaNum(username),
@@ -38,18 +38,18 @@ const registerUsername = (username) => {
   });
 };
 
-const registerEmail = (email) => {
+const registerEmail = (email, string) => {
   return emailSchemaObj.required().messages({
-    'string.base': schemaMessages.base(email),
+    'string.base': schemaMessages.base(email, string),
     'string.email': schemaMessages.email(email),
     'string.empty': schemaMessages.empty(email),
     'any.required': schemaMessages.required(email),
   });
 };
 
-const registerPassword = (password) => {
+const registerPassword = (password, string) => {
   return registerPasswordSchemaObj.required().messages({
-    'string.base': schemaMessages.base(password),
+    'string.base': schemaMessages.base(password, string),
     'string.min': schemaMessages.min(password, registerValues.PASSWORD.min),
     'string.max': schemaMessages.max(password, registerValues.PASSWORD.max),
     'string.pattern.base': schemaMessages.patternNumSpec(password),
@@ -70,11 +70,11 @@ const confirmPassword = (password) => {
 
 const validateRegister = (req, res, next) => {
   const registerSchema = Joi.object({
-    firstName: registerFirstLastName('First name'),
-    lastName: registerFirstLastName('Last name'),
-    username: registerUsername('Username'),
-    email: registerEmail('Email'),
-    password: registerPassword('Password'),
+    firstName: registerFirstLastName('First name', 'string'),
+    lastName: registerFirstLastName('Last name', 'string'),
+    username: registerUsername('Username', 'string'),
+    email: registerEmail('Email', 'string'),
+    password: registerPassword('Password', 'string'),
     confirmPassword: confirmPassword('Confirm Password'),
     role: Joi.string().valid('BASIC_USER', 'SUPER_ADMIN_USER'),
   });
