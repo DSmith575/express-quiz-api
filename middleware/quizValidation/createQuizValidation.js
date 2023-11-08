@@ -2,20 +2,6 @@ import Joi from 'joi';
 import schemaMessages from '../../utils/schemaMessages/joiSchemaMessages.js';
 import quizValues from '../../utils/consonants/quizConsonants.js';
 
-// const test = '2011-12-23'
-// const newDate = new Date(test);
-// const returnedISO = newDate.toISOString().split("T")[0]
-
-// const endDate = new Date(newDate);
-// endDate.setDate(newDate.getDate() + 5);
-// console.log(endDate.toISOString().split("T")[0])
-// console.log(returnedISO)
-
-// const test = Object.values(quizValues.CATEGORY_TYPES);
-// console.log(...test)
-
-// console.log(quizValues.CATEGORIES_ID)
-
 const quizNameSchemaObj = Joi.string()
   .min(quizValues.QUIZ_NAME.min)
   .max(quizValues.QUIZ_NAME.max)
@@ -48,8 +34,8 @@ const quizDifficulty = (difficulty, string) => {
 };
 
 const quizCategoryID = (category, int) => {
-  const categoryIds = quizValues.CATEGORIES_ID.map((category) => category.id);
-  const categoryNames = quizValues.CATEGORIES_ID.map((category) => `[${category.id}] ${category.name}`);
+  const categoryIds = quizValues.CATEGORIES_ID.map((categoryId) => categoryId.id);
+  const categoryNames = quizValues.CATEGORIES_ID.map((categorySet) => `[${categorySet.id}] ${categorySet.name}`);
   return quizCategorySchemaObj
     .valid(...categoryIds)
     .required()
@@ -62,11 +48,42 @@ const quizCategoryID = (category, int) => {
     });
 };
 
+// Date uses non NZ time, so day -1 works
+const quizStartDate = (date, dateType) => {
+  return Joi.date()
+    .min(new Date().toISOString().split('T')[0]) // Start date must be greater than or equal to today Converting input to ISO and returning the first half of the array (date)
+    .required()
+    .messages({
+      'date.base': schemaMessages.base(date, dateType),
+      'date.min': 'Start date must be greater than or equal to today in string format YYYY-MM-DD',
+      'date.max': 'Start date must be before or equal to the end date',
+      'any.required': 'Start date is required',
+    });
+};
+
+const quizEndDate = (date, startDate, dateType) => {
+  const maxEndDate = new Date();
+  maxEndDate.setDate(maxEndDate.getDate() + 5); // Calculate maximum end date (5 days from today)
+
+  return Joi.date()
+    .greater(Joi.ref('startDate')) // End date must be greater than the start date
+    .max(maxEndDate.toISOString().split('T')[0]) // End date must be no longer than five days from the start date
+    .required()
+    .messages({
+      'date.base': schemaMessages.base(date, startDate),
+      'date.greater': schemaMessages.greater(date, dateType),
+      'date.max': schemaMessages.dateMax(date),
+      'any.required': schemaMessages.required(date),
+    });
+};
+
 const validateQuiz = (req, res, next) => {
   const quizSchema = Joi.object({
     name: quizName('Quiz name', 'string'),
     difficulty: quizDifficulty('Difficulty', 'string'),
-    categoryId: quizCategoryID('CategoryId', 'int'),
+    categoryId: quizCategoryID('CategoryId [id]', 'int'),
+    startDate: quizStartDate('Start date', 'string format YYYY-MM-DD'),
+    endDate: quizEndDate('End date', 'string format YYYY-MM-DD', 'Start Date'),
   });
 
   const { error } = quizSchema.validate(req.body);

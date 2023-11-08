@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const createQuiz = async (req, res) => {
   try {
-    const { name, difficulty } = req.body;
+    const { name, difficulty, categoryId, startDate, endDate } = req.body;
 
     const { role } = req.user;
 
@@ -17,6 +17,9 @@ const createQuiz = async (req, res) => {
     return res.json({
       msg: name,
       difficulty,
+      categoryId,
+      startDate,
+      endDate,
     });
   } catch (error) {
     return res.status(500).json({
