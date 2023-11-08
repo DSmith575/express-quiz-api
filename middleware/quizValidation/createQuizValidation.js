@@ -77,6 +77,15 @@ const quizEndDate = (date, startDate, dateType) => {
     });
 };
 
+const quizQuestionLimit = () => {
+  return Joi.number().min(10).max(10).required().messages({
+    'number.base': 'totalQuestions should be a number',
+    'number.min': 'totalQuestions amount must be 10',
+    'number.max': 'totalQuestions amount must be 10',
+    'any.required': 'totalQuestions is required',
+  });
+};
+
 const validateQuiz = (req, res, next) => {
   const quizSchema = Joi.object({
     name: quizName('Quiz name', 'string'),
@@ -84,6 +93,7 @@ const validateQuiz = (req, res, next) => {
     categoryId: quizCategoryID('CategoryId [id]', 'int'),
     startDate: quizStartDate('Start date', 'string format YYYY-MM-DD'),
     endDate: quizEndDate('End date', 'string format YYYY-MM-DD', 'Start Date'),
+    totalQuestions: quizQuestionLimit(),
   });
 
   const { error } = quizSchema.validate(req.body);
