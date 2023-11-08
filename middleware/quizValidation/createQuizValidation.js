@@ -86,6 +86,19 @@ const quizQuestionLimit = () => {
   });
 };
 
+const quizType = () => {
+  const quizTypes = Object.values(quizValues.QUIZ_TYPE);
+  return Joi.string()
+    .valid(...quizTypes)
+    .required()
+    .messages({
+      'string.base': 'Type should be a string',
+      'string.empty': 'Type cannot be empty',
+      'any.required': 'Type is required',
+      'any.only': `Type must contain either ${quizTypes}`,
+    });
+};
+
 const validateQuiz = (req, res, next) => {
   const quizSchema = Joi.object({
     name: quizName('Quiz name', 'string'),
@@ -94,6 +107,7 @@ const validateQuiz = (req, res, next) => {
     startDate: quizStartDate('Start date', 'string format YYYY-MM-DD'),
     endDate: quizEndDate('End date', 'string format YYYY-MM-DD', 'Start Date'),
     totalQuestions: quizQuestionLimit(),
+    questionType: quizType(),
   });
 
   const { error } = quizSchema.validate(req.body);

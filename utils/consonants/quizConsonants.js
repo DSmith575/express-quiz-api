@@ -19,6 +19,11 @@ const CATEGORIES_MIN_MAX = {
   max: 32,
 };
 
+const QUIZ_TYPE = {
+  multiple: 'multiple',
+  boolean: 'boolean',
+};
+
 const CATEGORIES_ID = [
   {
     id: 9,
@@ -118,4 +123,4 @@ const CATEGORIES_ID = [
   },
 ];
 
-export default { QUIZ_NAME, QUIZ_QUESTIONS, CATEGORY_DIFFICULTY, CATEGORIES_ID, CATEGORIES_MIN_MAX };
+export default { QUIZ_NAME, QUIZ_QUESTIONS, CATEGORY_DIFFICULTY, CATEGORIES_ID, CATEGORIES_MIN_MAX, QUIZ_TYPE };
