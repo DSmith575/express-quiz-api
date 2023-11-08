@@ -107,7 +107,7 @@ const validateQuiz = (req, res, next) => {
     startDate: quizStartDate('Start date', 'string format YYYY-MM-DD'),
     endDate: quizEndDate('End date', 'string format YYYY-MM-DD', 'Start Date'),
     totalQuestions: quizQuestionLimit(),
-    questionType: quizType(),
+    type: quizType(),
   });
 
   const { error } = quizSchema.validate(req.body);

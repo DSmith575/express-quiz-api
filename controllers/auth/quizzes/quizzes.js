@@ -23,7 +23,7 @@ const prisma = new PrismaClient();
 
 const createQuiz = async (req, res) => {
   try {
-    const { name, difficulty, categoryId, startDate, endDate, totalQuestions, questionType } = req.body;
+    const { name, difficulty, categoryId, startDate, endDate, totalQuestions, type } = req.body;
 
     const { role } = req.user;
 
@@ -33,10 +33,40 @@ const createQuiz = async (req, res) => {
       });
     }
 
+    // const test = await prisma.category.findMany({
+    //   where: {
+    //     id: 9
+    //   },
+    //   include: {
+    //     quizzes: true,
+    //   }
+    // });
+    // return res.json({
+    //   data: test
+    // })
+    const checkQuizNames = await prisma.quiz.findFirst({
+      where: ({ name: String(name)})
+    })
+
+    if (checkQuizNames) {
+      return res.json({
+        msg: "Quiz name already exists"
+      })
+    }
+
+
     const getQuiz = await fetch(
-      `https://opentdb.com/api.php?amount=${totalQuestions}&category=${categoryId}&difficulty=${difficulty}&type=${questionType}`,
+      `https://opentdb.com/api.php?amount=${totalQuestions}&category=${categoryId}&difficulty=${difficulty}&type=${type}`,
     );
     const questions = await getQuiz.json();
+
+    if (questions.response_code === 1) {
+      return res.status(400).json({
+        statusCode: res.statusCode,
+        msg: 'Quiz category does not contain any questions for this type',
+        error: 'Some data is missing or empty'
+      })
+    }
 
     // DO NOT NEED TO GET INCORRECT ANSWERS ONLY COMPARE GIVEN ANSWER WITH CORRECT ANSWER
     // return res.json({
@@ -45,27 +75,40 @@ const createQuiz = async (req, res) => {
 
     // console.log(questions.results);
 
-    await prisma.category.create({
-      data: {
-        id: categoryId,
-        name: questions.results[0].category
-      },
+    const findQuizID = await prisma.category.findFirst({
+      where: ({id: Number(categoryId)}),
     });
 
-    await prisma.quiz.create({
+    if (!findQuizID) {
+      await prisma.category.create({
+        data: {
+          id: categoryId,
+          name: questions.results[0].category
+        },
+      });
+    } 
+      // return res.status(404).json({
+      //   msg: `Quiz with the id ${findQuizID.id} already exists`,
+      //   data: await prisma.category.findMany({}),
+      // });
+
+
+   const quizCreation = await prisma.quiz.create({
       data: {
-        categoryId,
-        name,
-        type: questionType,
-        difficulty,
-        startDate,
-        endDate,
-        questions: questions.results,
+  name,
+  categoryId,
+  name,
+  type,
+  difficulty,
+  startDate,
+  endDate
       },
     });
+  
 
     return res.status(201).json({
       msg: 'Quiz successfully created',
+      data: quizCreation
     });
 
     // return res.json({

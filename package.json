@@ -17,9 +17,6 @@
     "pretty:fix": "prettier --write .",
     "lint": "eslint --fix --ext .js ."
   },
-  "prisma": {
-    "seed": "node --env-file=.env prisma/seed.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/otago-polytechnic-bit-courses/s2-23-id608001-project-2-DSmith575.git"
