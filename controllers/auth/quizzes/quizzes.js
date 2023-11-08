@@ -45,15 +45,14 @@ const createQuiz = async (req, res) => {
     //   data: test
     // })
     const checkQuizNames = await prisma.quiz.findFirst({
-      where: ({ name: String(name)})
-    })
+      where: { name: String(name) },
+    });
 
     if (checkQuizNames) {
       return res.json({
-        msg: "Quiz name already exists"
-      })
+        msg: 'Quiz name already exists',
+      });
     }
-
 
     const getQuiz = await fetch(
       `https://opentdb.com/api.php?amount=${totalQuestions}&category=${categoryId}&difficulty=${difficulty}&type=${type}`,
@@ -64,8 +63,8 @@ const createQuiz = async (req, res) => {
       return res.status(400).json({
         statusCode: res.statusCode,
         msg: 'Quiz category does not contain any questions for this type',
-        error: 'Some data is missing or empty'
-      })
+        error: 'Some data is missing or empty',
+      });
     }
 
     // DO NOT NEED TO GET INCORRECT ANSWERS ONLY COMPARE GIVEN ANSWER WITH CORRECT ANSWER
@@ -76,39 +75,63 @@ const createQuiz = async (req, res) => {
     // console.log(questions.results);
 
     const findQuizID = await prisma.category.findFirst({
-      where: ({id: Number(categoryId)}),
+      where: { id: Number(categoryId) },
     });
 
     if (!findQuizID) {
       await prisma.category.create({
         data: {
           id: categoryId,
-          name: questions.results[0].category
+          name: questions.results[0].category,
         },
       });
-    } 
-      // return res.status(404).json({
-      //   msg: `Quiz with the id ${findQuizID.id} already exists`,
-      //   data: await prisma.category.findMany({}),
-      // });
+    }
+    // return res.status(404).json({
+    //   msg: `Quiz with the id ${findQuizID.id} already exists`,
+    //   data: await prisma.category.findMany({}),
+    // });
 
+    // return res.json({
+    //   msg: questions.results.map((value, index) => {
+    //     console.log(`Category: ${value.category}`);
+    //     console.log(`Type: ${value.type}`);
+    //     console.log(`Difficulty: ${value.difficulty}`);
+    //     console.log(`Question: ${value.question}`);
+    //     console.log(`Correct Answer: ${value.correct_answer}`);
+    //     console.log(`Incorrect Answers: ${typeof value.incorrect_answers.join("," )}`);
+    //     console.log(''); // Add an empty line for separation
+    //   })
+    // })
 
-   const quizCreation = await prisma.quiz.create({
+    // return res.json({
+    //   questionTest
+    // })
+
+    const quizCreation = await prisma.quiz.create({
       data: {
-  name,
-  categoryId,
-  name,
-  type,
-  difficulty,
-  startDate,
-  endDate
+        name,
+        categoryId,
+        name,
+        type,
+        difficulty,
+        startDate,
+        endDate,
+        questions: {
+          create: questions.results.map((question) => ({
+            question: question.question,
+            correctAnswer: question.correct_answer,
+            incorrectAnswers: { set: question.incorrect_answers },
+          })),
+        },
+      },
+      include: {
+        questions: true,
       },
     });
-  
 
     return res.status(201).json({
       msg: 'Quiz successfully created',
-      data: quizCreation
+      data: quizCreation,
     });
 
     // return res.json({
@@ -167,11 +190,11 @@ const getQuiz = async (req, res) => {
       where: { id: Number(req.params.id) },
     });
 
-    if(!userID) {
+    if (!userID) {
       return res.status(404).json({
-        msg: "No quiz found with that id",
-        data: await prisma.category.findMany()
-      })
+        msg: 'No quiz found with that id',
+        data: await prisma.category.findMany(),
+      });
     }
 
     return res.json({
