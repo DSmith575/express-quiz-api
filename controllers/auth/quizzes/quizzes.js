@@ -171,8 +171,13 @@ const deleteQuiz = async (req, res) => {
       });
     }
 
-    return res.json({
-      msg: 'hello',
+    await prisma.quiz.delete({
+      where: { id: Number(req.params.id) },
+    });
+
+    return res.status(200).json({
+      statusCode: res.statusCode,
+      msg: `Quiz with the id ${req.params.id} successfully deleted`,
     });
   } catch (error) {
     return res.status(500).json({
@@ -181,25 +186,35 @@ const deleteQuiz = async (req, res) => {
   }
 };
 
-// Check categories
-// if id and name don't exist, create them, else pass a list of categories that are already made to use.
-
 const getQuiz = async (req, res) => {
   try {
-    const userID = await prisma.category.findUnique({
+    const findQuiz = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
     });
 
-    if (!userID) {
+    if (findQuiz.length === 0) {
       return res.status(404).json({
-        msg: 'No quiz found with that id',
-        data: await prisma.category.findMany(),
+        msg: `No quizzes found`,
       });
     }
 
-    return res.json({
-      data: userID,
+    if (!findQuiz) {
+      return res.status(404).json({
+        msg: `No quiz with the id ${req.params.id} found`,
+      });
+    }
+
+    return res.status(200).json({
+      statusCode: res.statusCode,
+      data: findQuiz,
     });
+
+    // const userId = await prisma.quiz.findFirst({
+    //   where: {id: Number(req.params.id)},
+    //   include: {
+    //     questions: true,
+    //   }
+    // })
   } catch (error) {
     return res.status(500).json({
       msg: 'No Quiz found',
@@ -207,4 +222,26 @@ const getQuiz = async (req, res) => {
   }
 };
 
-export { createQuiz, deleteQuiz, getQuiz };
+const getAllQuizzes = async (req, res) => {
+  try {
+    const getAllQuiz = await prisma.quiz.findMany({});
+
+    if (getAllQuiz.length === 0) {
+      return res.status(404).json({
+        statusCode: res.statusCode,
+        msg: `No Quizzes found`,
+      });
+    }
+
+    return res.status(200).json({
+      data: getAllQuiz,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      statusCode: res.statusCode,
+      msg: error.message,
+    });
+  }
+};
+
+export { createQuiz, deleteQuiz, getQuiz, getAllQuizzes };
