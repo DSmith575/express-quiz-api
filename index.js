@@ -44,7 +44,8 @@ app.get('/', (req, res) => {
 
 app.get(`${BASE_PATH}`, (req, res) => {
   return res.json({
-    endpoints: [`${BASE_PATH}/auth/register`, `${BASE_PATH}/auth/login`, `${BASE_PATH}/auth/quizzes`],
+    endpoints: [`${BASE_PATH}/auth/register`, `${BASE_PATH}/auth/login`, `${BASE_PATH}/auth/quizzes`,
+  `${BASE_PATH}/auth/quizzes/create`, `${BASE_PATH}/auth/quizzes/delete/{id}`, `${BASE_PATH}/auth/quizzes/{id}` ],
   });
 });
 
