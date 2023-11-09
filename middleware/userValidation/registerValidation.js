@@ -38,13 +38,28 @@ const registerUsername = (username, string) => {
   });
 };
 
-const registerEmail = (email, string) => {
-  return emailSchemaObj.required().messages({
-    'string.base': schemaMessages.base(email, string),
-    'string.email': schemaMessages.email(email),
-    'string.empty': schemaMessages.empty(email),
-    'any.required': schemaMessages.required(email),
-  });
+// Custom validation to compare username and email
+// using Jois value helper arguments, we compare the split req.body.email with the req.body.username
+// if it is true the value is returned for validation.
+// if false displays a custom helper message error
+const registerEmail = (email, string, reqUsername, reqEmail) => {
+  const customValidation = (value, helpers) => {
+    if ((value = reqEmail.split('@')[0] === reqUsername)) {
+      return value;
+    }
+    return helpers.error('email.unauthorized');
+  };
+
+  return emailSchemaObj
+    .required()
+    .custom(customValidation, 'custom email validation')
+    .messages({
+      'string.base': schemaMessages.base(email, string),
+      'string.email': schemaMessages.email(email),
+      'string.empty': schemaMessages.empty(email),
+      'any.required': schemaMessages.required(email),
+      'email.unauthorized': schemaMessages.unauthorizedEmail(email),
+    });
 };
 
 const registerPassword = (password, string) => {
@@ -73,7 +88,7 @@ const validateRegister = (req, res, next) => {
     firstName: registerFirstLastName('First name', 'string'),
     lastName: registerFirstLastName('Last name', 'string'),
     username: registerUsername('Username', 'string'),
-    email: registerEmail('Email', 'string'),
+    email: registerEmail('Email', 'string', req.body.username, req.body.email),
     password: registerPassword('Password', 'string'),
     confirmPassword: confirmPassword('Confirm Password'),
     role: Joi.string().valid('BASIC_USER', 'SUPER_ADMIN_USER'),

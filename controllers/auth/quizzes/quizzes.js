@@ -2,21 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 
 /**
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *       statusCode: res.statusCode,
- *
- *
  *      CHANGE EMAIL TO COMPARE USERNAME
  */
 const prisma = new PrismaClient();
@@ -29,6 +14,7 @@ const createQuiz = async (req, res) => {
 
     if (role !== 'SUPER_ADMIN_USER') {
       return res.status(403).json({
+        statusCode: res.statusCode,
         msg: 'Not authorized to access this route',
       });
     }
@@ -49,7 +35,8 @@ const createQuiz = async (req, res) => {
     });
 
     if (checkQuizNames) {
-      return res.json({
+      return res.status(409).json({
+        statusCode: res.statusCode,
         msg: 'Quiz name already exists',
       });
     }
@@ -74,6 +61,7 @@ const createQuiz = async (req, res) => {
 
     // console.log(questions.results);
 
+    // Before creating a new category, checks already made categories and creates from the fields if does not exist
     const findQuizID = await prisma.category.findFirst({
       where: { id: Number(categoryId) },
     });
@@ -107,11 +95,12 @@ const createQuiz = async (req, res) => {
     //   questionTest
     // })
 
+    // When creating the quiz we are also creating the questions model at the same time
+    // using the set syntax we can pass the incorrect answers to the String[]
     const quizCreation = await prisma.quiz.create({
       data: {
         name,
         categoryId,
-        name,
         type,
         difficulty,
         startDate,
@@ -130,22 +119,13 @@ const createQuiz = async (req, res) => {
     });
 
     return res.status(201).json({
+      statusCode: res.statusCode,
       msg: 'Quiz successfully created',
       data: quizCreation,
     });
-
-    // return res.json({
-    //   msg: name,
-    //   difficulty,
-    //   categoryId,
-    //   startDate,
-    //   endDate,
-    //   totalQuestions,
-    //   questionType,
-    //   questions: data.results
-    // });
   } catch (error) {
     return res.status(500).json({
+      statusCode: res.statusCode,
       msg: error.message,
     });
   }
@@ -161,12 +141,14 @@ const deleteQuiz = async (req, res) => {
 
     if (role !== 'SUPER_ADMIN_USER') {
       return res.status(403).json({
+        statusCode: res.statusCode,
         msg: 'You are not authorized to access this route',
       });
     }
 
     if (!quizId) {
       return res.status(404).json({
+        statusCode: res.statusCode,
         msg: `No quiz with the id ${req.params.id} exists`,
       });
     }

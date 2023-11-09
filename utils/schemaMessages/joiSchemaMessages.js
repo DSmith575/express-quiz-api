@@ -39,6 +39,7 @@ const validationMessages = {
     `${fieldName} must be greater than 5 days from the start date. Please make sure date is in string format YYYY-MM-DD`,
   dateMin: (fieldName) => `${fieldName} must be greater than or equal to today in string format YYYY-MM-DD`,
   format: (fieldName) => `${fieldName} must follow the format YYYY-MM-DD`,
+  unauthorizedEmail: (fieldName) => `${fieldName} must match the username`,
 };
 
 export default validationMessages;
