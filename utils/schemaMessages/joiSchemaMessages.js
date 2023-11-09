@@ -3,23 +3,28 @@
 * @file joiSchemaMessages.js
 * @author Deacon Smith
 * @created 5/11/2023
-* @updated 5/11/2023
+* @updated 9/11/2023
 *
-* @property {Function} base - A template for a basic validation error message.
-* @property {Function} min - A template for a minimum length validation error message.
-* @property {Function} max - A template for a maximum length validation error message.
-* @property {Function} empty - A template for an empty field validation error message.
-* @property {Function} required - A template for a required field validation error message.
-* @property {Function} email - A template for an email format validation error message.
-* @property {Function} patternAlpha - A template for a validation error message when only alphabetic characters are allowed.
-* @property {Function} patternAlphaNum - A template for a validation error message when only alphanumeric characters are allowed.
-* @property {Function} patternNumSpec - A template for a validation error message when at least one numeric and one special character are required.
-* @property {Function} only - A template for a validation error message when a field does not match the expected value.
+ * @property {Function} base - Basic validation error message.
+ * @property {Function} min - Minimum length validation error message.
+ * @property {Function} max - Maximum length validation error message.
+ * @property {Function} empty - Empty field validation error message.
+ * @property {Function} required - Required field validation error message.
+ * @property {Function} email - Email format validation error message.
+ * @property {Function} patternAlpha - Validation error message when only alphabetic characters are allowed.
+ * @property {Function} patternAlphaNum - Validation error message when only alphanumeric characters are allowed.
+ * @property {Function} patternNumSpec - Validation error message when at least one numeric and one special character are required.
+ * @property {Function} only - Validation error message when a field does not match the expected value.
+ * @property {Function} valid - Validation error message when the field must be one of the specified values.
+ * @property {Function} greater - Validation error message when the field must be greater than a specified date.
+ * @property {Function} dateMax - Validation error message when the date must be greater than a certain number of days from the start date.
+ * @property {Function} dateMin - Validation error message when the date must be greater than or equal to today.
+ * @property {Function} format - Validation error message when the field must follow a specific date format.
+ * @property {Function} unauthorizedEmail - Validation error message when the field must match the username part of an email.
+ * @property {Function} quizOnly - Validation error message when the field must contain specific values.
 
-* @param {string} fieldName - The name of the field being validated.
-* @param {number} min - The minimum length required.
-* @param {number} max - The maximum length allowed.
-*/
+ * @param {string} fieldName - The name of the field being validated.
+ */
 
 const validationMessages = {
   base: (fieldName, type) => `${fieldName} should be a ${type}`,
