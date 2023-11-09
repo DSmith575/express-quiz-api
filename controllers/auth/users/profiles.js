@@ -141,18 +141,28 @@ const deleteUser = async (req, res) => {
 
     if (!userID) {
       return res.status(404).json({
+        statusCode: res.statusCode,
         msg: `No user found`,
       });
     }
 
     if (id !== userID.id && role !== 'SUPER_ADMIN_USER') {
       return res.status(403).json({
+        statusCode: res.statusCode,
         msg: `You are not authorized to access this route`,
+      });
+    }
+
+    if (id === userID.id) {
+      return res.status(403).json({
+        statusCode: res.statusCode,
+        msg: 'You are not able to delete yourself',
       });
     }
 
     if (userID.role === 'SUPER_ADMIN_USER') {
       return res.status(403).json({
+        statusCode: res.statusCode,
         msg: `You cannot delete this user`,
       });
     }
@@ -162,10 +172,12 @@ const deleteUser = async (req, res) => {
     });
 
     return res.status(200).json({
+      statusCode: res.statusCode,
       msg: `User ${userID.username} successfully deleted`,
     });
   } catch (error) {
     return res.status(500).json({
+      statusCode: res.statusCode,
       msg: error.message,
     });
   }
