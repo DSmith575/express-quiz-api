@@ -8,7 +8,14 @@
 
 import express from 'express';
 import validateQuiz from '../../middleware/quizValidation/createQuizValidation.js';
-import { createQuiz, deleteQuiz, getAllQuizzes, getPastQuizzes, getPresentQuizzes, getQuiz } from '../../controllers/auth/quizzes/quizzes.js';
+import {
+  createQuiz,
+  deleteQuiz,
+  getAllQuizzes,
+  getPastQuizzes,
+  getPresentQuizzes,
+  getQuiz,
+} from '../../controllers/auth/quizzes/quizzes.js';
 import auth from '../../middleware/authRoute.js';
 
 const router = express.Router();
@@ -20,6 +27,5 @@ router.route('/past').get(auth, getPastQuizzes);
 router.route('/create').post(auth, validateQuiz, createQuiz);
 router.route('/delete/:id').delete(auth, deleteQuiz);
 router.route('/:id').get(auth, getQuiz);
-
 
 export default router;

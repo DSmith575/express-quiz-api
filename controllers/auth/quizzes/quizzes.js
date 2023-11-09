@@ -246,14 +246,13 @@ const getAllQuizzes = async (req, res) => {
 
 const getPastQuizzes = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0]
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    const test = await prisma.quiz.findMany({})
-    
+    const test = await prisma.quiz.findMany({});
 
     return res.json({
-      data: test.startDate
-    })
+      data: test.startDate,
+    });
 
     const pastQuiz = await prisma.quiz.findMany({
       where: {
@@ -266,25 +265,24 @@ const getPastQuizzes = async (req, res) => {
     if (pastQuiz.length === 0) {
       return res.status(404).json({
         statusCode: res.statusCode,
-        msg: `No past quizzes found`
+        msg: `No past quizzes found`,
       });
-    };
+    }
 
     return res.status(200).json({
       statusCode: res.statusCode,
       data: pastQuiz,
     });
-
   } catch (error) {
     return res.status(500).json({
       msg: error.message,
     });
-  };
+  }
 };
 
 const getPresentQuizzes = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0]
+    const currentDate = new Date().toISOString().split('T')[0];
 
     const presentQuiz = await prisma.quiz.findMany({
       where: {
@@ -301,20 +299,18 @@ const getPresentQuizzes = async (req, res) => {
       return res.status(500).json({
         msg: `No present quizzes found`,
       });
-    };
+    }
 
     return res.status(200).json({
       statusCode: res.statusCode,
       data: presentQuiz,
     });
-
   } catch (error) {
     return res.status(500).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
-  };
+  }
 };
-
 
 export { createQuiz, deleteQuiz, getQuiz, getAllQuizzes, getPastQuizzes, getPresentQuizzes };

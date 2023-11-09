@@ -33,8 +33,12 @@ const validationMessages = {
   patternAlphaNum: (fieldName) => `${fieldName} should only contain alphanumeric characters`,
   patternNumSpec: (fieldName) => `${fieldName} should contain at least one numeric and one special character`,
   valid: (fieldName, object) => `${fieldName} must be of the following ${object}`,
-  greater: (fieldName, date) => `${fieldName} must be greater than ${date} and no more than 5 days`,
-  dateMax: (fieldName) => `${fieldName} must be greater than 5 days from the start date`,
+  greater: (fieldName, date) =>
+    `${fieldName} must be greater than ${date} and no more than 5 days and in string format YYYY-MM-DD`,
+  dateMax: (fieldName) =>
+    `${fieldName} must be greater than 5 days from the start date. Please make sure date is in string format YYYY-MM-DD`,
+  dateMin: (fieldName) => `${fieldName} must be greater than or equal to today in string format YYYY-MM-DD`,
+  format: (fieldName) => `${fieldName} must follow the format YYYY-MM-DD`,
 };
 
 export default validationMessages;

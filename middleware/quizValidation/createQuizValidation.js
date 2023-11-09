@@ -1,6 +1,12 @@
 import Joi from 'joi';
+import JoiDate from '@joi/date';
 import schemaMessages from '../../utils/schemaMessages/joiSchemaMessages.js';
 import quizValues from '../../utils/consonants/quizConsonants.js';
+
+// Using @joi/date
+// Allows the use of the .format() function on dates to put own fields eg (YYYY-MM-DD)
+// We extend the initial Joi import to allow the @joi/date to work with it
+const JoiDates = Joi.extend(JoiDate);
 
 const quizNameSchemaObj = Joi.string()
   .min(quizValues.QUIZ_NAME.min)
@@ -48,30 +54,39 @@ const quizCategoryID = (category, int) => {
     });
 };
 
-// Date uses non NZ time, so day -1 works
+// Start date now gets a new date and set the hours to midnight.
+// The way .min was working is that it checks the current timestring exactly,
+// so by the time you post the date no longer matches the min "expected date"
 const quizStartDate = (date, dateType) => {
-  return Joi.date()
-    .min(new Date().toISOString().split('T')[0]) // Start date must be greater than or equal to today Converting input to ISO and returning the first half of the array (date)
+  const currentDate = new Date().setHours(0, 0, 0, 0);
+  return JoiDates.date()
+    .format('YYYY-MM-DD')
+    .min(currentDate)
     .required()
     .messages({
+      'date.format': schemaMessages.format(date),
       'date.base': schemaMessages.base(date, dateType),
-      'date.min': 'Start date must be greater than or equal to today in string format YYYY-MM-DD',
-      'date.max': 'Start date must be before or equal to the end date',
+      'date.min': schemaMessages.min(dateType),
       'any.required': 'Start date is required',
     });
 };
 
-const quizEndDate = (date, startDate, dateType) => {
-  const maxEndDate = new Date();
-  maxEndDate.setDate(maxEndDate.getDate() + 5); // Calculate maximum end date (5 days from today)
+// To pass the correct endDate, we pass in the startDate from req.body
+// we can then use that to make a new date and add +5 to the days to allow the correct comparisons to work
+// Start the validation by creating a new Date and adding 5 days to it before the rest of the validation starts
+const quizEndDate = (date, dateType, startDate, reqStartDate) => {
+  const endQuizMax = new Date(reqStartDate);
+  endQuizMax.setDate(endQuizMax.getDate() + 5);
 
-  return Joi.date()
-    .greater(Joi.ref('startDate')) // End date must be greater than the start date
-    .max(maxEndDate.toISOString().split('T')[0]) // End date must be no longer than five days from the start date
+  return JoiDates.date()
+    .format('YYYY-MM-DD')
+    .greater(Joi.ref('startDate')) // Using Joi.ref to compare the 'startDate' part of the JoiObject schema
+    .max(endQuizMax)
     .required()
     .messages({
-      'date.base': schemaMessages.base(date, startDate),
-      'date.greater': schemaMessages.greater(date, dateType),
+      'date.base': schemaMessages.base(date, dateType),
+      'date.format': schemaMessages.format(date),
+      'date.greater': schemaMessages.greater(date, startDate),
       'date.max': schemaMessages.dateMax(date),
       'any.required': schemaMessages.required(date),
     });
@@ -86,6 +101,7 @@ const quizQuestionLimit = () => {
   });
 };
 
+// Using Object.values to get the object data from quizValues consonant to pass as spread ...quizTypes
 const quizType = () => {
   const quizTypes = Object.values(quizValues.QUIZ_TYPE);
   return Joi.string()
@@ -99,13 +115,14 @@ const quizType = () => {
     });
 };
 
+// Passing the req.body.startDate to use for comparison in the endDate schema
 const validateQuiz = (req, res, next) => {
   const quizSchema = Joi.object({
     name: quizName('Quiz name', 'string'),
     difficulty: quizDifficulty('Difficulty', 'string'),
     categoryId: quizCategoryID('CategoryId [id]', 'int'),
-    startDate: quizStartDate('Start date', 'string format YYYY-MM-DD'),
-    endDate: quizEndDate('End date', 'string format YYYY-MM-DD', 'Start Date'),
+    startDate: quizStartDate('Start date', 'string'),
+    endDate: quizEndDate('End date', 'string', 'Start Date', req.body.startDate),
     totalQuestions: quizQuestionLimit(),
     type: quizType(),
   });
@@ -117,7 +134,6 @@ const validateQuiz = (req, res, next) => {
       msg: error.details[0].message,
     });
   }
-
   next();
 };
 
