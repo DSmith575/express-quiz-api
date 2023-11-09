@@ -39,12 +39,12 @@ const registerUsername = (username, string) => {
 };
 
 // Custom validation to compare username and email
-// using Jois value helper arguments, we compare the split req.body.email with the req.body.username
+// using Jois value helper arguments, we compare the split the value of the emailValidation("email" from body) with the req.body.username
 // if it is true the value is returned for validation.
-// if false displays a custom helper message error
-const registerEmail = (email, string, reqUsername, reqEmail) => {
+// if false displays a custom helpers message error
+const registerEmail = (email, string, reqUsername) => {
   const customValidation = (value, helpers) => {
-    if ((value = reqEmail.split('@')[0] === reqUsername)) {
+    if (value.split('@')[0] === reqUsername) {
       return value;
     }
     return helpers.error('email.unauthorized');
@@ -88,7 +88,7 @@ const validateRegister = (req, res, next) => {
     firstName: registerFirstLastName('First name', 'string'),
     lastName: registerFirstLastName('Last name', 'string'),
     username: registerUsername('Username', 'string'),
-    email: registerEmail('Email', 'string', req.body.username, req.body.email),
+    email: registerEmail('Email', 'string', req.body.username),
     password: registerPassword('Password', 'string'),
     confirmPassword: confirmPassword('Confirm Password'),
     role: Joi.string().valid('BASIC_USER', 'SUPER_ADMIN_USER'),

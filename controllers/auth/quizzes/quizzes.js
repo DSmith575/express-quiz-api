@@ -1,9 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 
-/**
- *      CHANGE EMAIL TO COMPARE USERNAME
- */
 const prisma = new PrismaClient();
 
 const createQuiz = async (req, res) => {
