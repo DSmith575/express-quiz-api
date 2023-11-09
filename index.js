@@ -47,9 +47,14 @@ app.get(`${BASE_PATH}`, (req, res) => {
     endpoints: [
       `${BASE_PATH}/auth/register`,
       `${BASE_PATH}/auth/login`,
+      `${BASE_PATH}/auth/users`,
+      `${BASE_PATH}/auth/users/{id}`,
       `${BASE_PATH}/auth/quizzes`,
       `${BASE_PATH}/auth/quizzes/create`,
       `${BASE_PATH}/auth/quizzes/delete/{id}`,
+      `${BASE_PATH}/auth/quizzes/past`,
+      `${BASE_PATH}/auth/quizzes/present`,
+      `${BASE_PATH}/auth/quizzes/future`,
       `${BASE_PATH}/auth/quizzes/{id}`,
     ],
   });
