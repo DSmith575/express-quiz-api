@@ -60,14 +60,14 @@ const quizCategoryID = (category, int) => {
 const quizStartDate = (date, dateType) => {
   const currentDate = new Date().setHours(0, 0, 0, 0);
   return JoiDates.date()
-    .format('YYYY-MM-DD')
+    .format(quizValues.QUIZ_DATES.format)
     .min(currentDate)
     .required()
     .messages({
       'date.format': schemaMessages.format(date),
       'date.base': schemaMessages.base(date, dateType),
       'date.min': schemaMessages.min(dateType),
-      'any.required': 'Start date is required',
+      'any.required': schemaMessages.required(date),
     });
 };
 
@@ -76,10 +76,10 @@ const quizStartDate = (date, dateType) => {
 // Start the validation by creating a new Date and adding 5 days to it before the rest of the validation starts
 const quizEndDate = (date, dateType, startDate, reqStartDate) => {
   const endQuizMax = new Date(reqStartDate);
-  endQuizMax.setDate(endQuizMax.getDate() + 5);
+  endQuizMax.setDate(endQuizMax.getDate() + quizValues.QUIZ_DATES.addFive);
 
   return JoiDates.date()
-    .format('YYYY-MM-DD')
+    .format(quizValues.QUIZ_DATES.format)
     .greater(Joi.ref('startDate')) // Using Joi.ref to compare the 'startDate' part of the JoiObject schema
     .max(endQuizMax)
     .required()
@@ -92,26 +92,30 @@ const quizEndDate = (date, dateType, startDate, reqStartDate) => {
     });
 };
 
-const quizQuestionLimit = () => {
-  return Joi.number().min(10).max(10).required().messages({
-    'number.base': 'totalQuestions should be a number',
-    'number.min': 'totalQuestions amount must be 10',
-    'number.max': 'totalQuestions amount must be 10',
-    'any.required': 'totalQuestions is required',
-  });
+const quizQuestionLimit = (qLimit, qLimitType) => {
+  return Joi.number()
+    .min(quizValues.QUIZ_QUESTIONS.required)
+    .max(quizValues.QUIZ_QUESTIONS.required)
+    .required()
+    .messages({
+      'number.base': schemaMessages.base(qLimit, qLimitType),
+      'number.min': schemaMessages.min(qLimit, quizValues.QUIZ_QUESTIONS.required),
+      'number.max': schemaMessages.max(qLimit, quizValues.QUIZ_QUESTIONS.required),
+      'any.required': schemaMessages.required(qLimit),
+    });
 };
 
 // Using Object.values to get the object data from quizValues consonant to pass as spread ...quizTypes
-const quizType = () => {
+const quizType = (type, qType) => {
   const quizTypes = Object.values(quizValues.QUIZ_TYPE);
   return Joi.string()
     .valid(...quizTypes)
     .required()
     .messages({
-      'string.base': 'Type should be a string',
-      'string.empty': 'Type cannot be empty',
-      'any.required': 'Type is required',
-      'any.only': `Type must contain either ${quizTypes}`,
+      'string.base': schemaMessages.base(type, qType),
+      'string.empty': schemaMessages.empty(type),
+      'any.required': schemaMessages.required(type),
+      'any.only': schemaMessages.quizOnly(type, quizTypes),
     });
 };
 
@@ -123,8 +127,8 @@ const validateQuiz = (req, res, next) => {
     categoryId: quizCategoryID('CategoryId [id]', 'int'),
     startDate: quizStartDate('Start date', 'string'),
     endDate: quizEndDate('End date', 'string', 'Start Date', req.body.startDate),
-    totalQuestions: quizQuestionLimit(),
-    type: quizType(),
+    totalQuestions: quizQuestionLimit('QuestionLimit', 'number'),
+    type: quizType('Type', 'string'),
   });
 
   const { error } = quizSchema.validate(req.body);

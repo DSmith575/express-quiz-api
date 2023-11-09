@@ -40,6 +40,7 @@ const validationMessages = {
   dateMin: (fieldName) => `${fieldName} must be greater than or equal to today in string format YYYY-MM-DD`,
   format: (fieldName) => `${fieldName} must follow the format YYYY-MM-DD`,
   unauthorizedEmail: (fieldName) => `${fieldName} must match the username`,
+  quizOnly: (fieldName, values) => `${fieldName} must contain ${values}`,
 };
 
 export default validationMessages;

@@ -14,6 +14,11 @@ const CATEGORY_DIFFICULTY = {
   hard: 'hard',
 };
 
+const QUIZ_DATES = {
+  addFive: 5,
+  format: 'YYYY-MM-DD',
+};
+
 const CATEGORIES_MIN_MAX = {
   min: 9,
   max: 32,
@@ -123,4 +128,4 @@ const CATEGORIES_ID = [
   },
 ];
 
-export default { QUIZ_NAME, QUIZ_QUESTIONS, CATEGORY_DIFFICULTY, CATEGORIES_ID, CATEGORIES_MIN_MAX, QUIZ_TYPE };
+export default { QUIZ_NAME, QUIZ_QUESTIONS, CATEGORY_DIFFICULTY, CATEGORIES_ID, CATEGORIES_MIN_MAX, QUIZ_TYPE, QUIZ_DATES };
