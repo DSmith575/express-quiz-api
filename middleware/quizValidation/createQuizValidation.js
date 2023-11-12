@@ -127,7 +127,7 @@ const validateQuiz = (req, res, next) => {
     categoryId: quizCategoryID('CategoryId [id]', 'int'),
     startDate: quizStartDate('Start date', 'string'),
     endDate: quizEndDate('End date', 'string', 'Start Date', req.body.startDate),
-    totalQuestions: quizQuestionLimit('QuestionLimit', 'number'),
+    totalQuestions: quizQuestionLimit('Total Questions', 'number'),
     type: quizType('Type', 'string'),
   });
 
