@@ -18,6 +18,7 @@ import {
   getQuiz,
 } from '../../controllers/auth/quizzes/quizzes.js';
 import auth from '../../middleware/authRoute.js';
+import joinQuiz from '../../controllers/auth/quizzes/joinQuiz.js';
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.route('/future').get(auth, getFutureQuizzes);
 router.route('/create').post(auth, validateQuiz, createQuiz);
 router.route('/delete/:id').delete(auth, deleteQuiz);
 router.route('/:id').get(auth, getQuiz);
+router.route('/:id/join').get(auth, joinQuiz);
 
 export default router;

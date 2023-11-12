@@ -1,7 +1,28 @@
 import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
+
 const joinQuiz = async (req, res) => {
   try {
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    const checkQuizDate = await prisma.quiz.findFirst({
+      where: { id: Number(req.params.id) },
+    });
+
+    const { startDate, endDate } = checkQuizDate;
+
+    if (startDate > currentDate) {
+      return res.json({
+        msg: 'Quiz has not started',
+      });
+    }
+
+    if (endDate < currentDate) {
+      return res.json({
+        msg: 'Quiz has already ended',
+      });
+    }
     // const { quizId, questionId}
     // const { id } = req.user;
     // ["true", "true", "true", "false", "true", "false"] User answers
@@ -31,3 +52,5 @@ const joinQuiz = async (req, res) => {
     });
   }
 };
+
+export default joinQuiz;
