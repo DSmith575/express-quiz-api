@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 
 const joinQuiz = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
-
     const { role } = req.user;
 
     // if (role !== 'BASIC_USER') {
@@ -15,34 +13,6 @@ const joinQuiz = async (req, res) => {
     //     msg: 'Only basic users can participate in a quiz',
     //   });
     // }
-
-    const checkQuizDate = await prisma.quiz.findFirst({
-      where: { id: Number(req.params.id) },
-    });
-
-    const { startDate, endDate } = checkQuizDate;
-
-    if (startDate > currentDate) {
-      return res.json({
-        msg: 'Quiz has not started',
-      });
-    }
-
-    // const checkParticipation = await prisma.userParticipateQuiz.findFirst({
-    //     where: {userId: Number(id)},
-    // });
-
-    // if (!checkParticipation) {
-    //     return res.json({
-    //         msg: "hello"
-    //     })
-    // }
-
-    if (endDate < currentDate) {
-      return res.json({
-        msg: 'Quiz has already ended',
-      });
-    }
 
     const getQuestions = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
