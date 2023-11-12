@@ -19,6 +19,7 @@
     "no-unused-vars": "warn",
     "consistent-return": "off",
     "prettier/prettier": 2,
+    "no-plusplus": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

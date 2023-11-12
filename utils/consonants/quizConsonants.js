@@ -29,6 +29,7 @@ const QUIZ_TYPE = {
   boolean: 'boolean',
 };
 
+// Taken from https://opentdb.com/api_category.php
 const CATEGORIES_ID = [
   {
     id: 9,

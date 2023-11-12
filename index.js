@@ -3,7 +3,7 @@
  * @file index.js
  * @author Deacon Smith
  * @created 4/11/2023
- * @updated 4/11/2023
+ * @updated 12/11/2023
  */
 
 import express, { json, urlencoded } from 'express';
@@ -14,11 +14,12 @@ import rateLimit from 'express-rate-limit';
 import auth from './routes/login-register/auth-process.js';
 import profile from './routes/users/profiles.js';
 import quiz from './routes/quizzes/quiz.js';
+import urlPath from './utils/consonants/globalConsonants.js';
 
 const { PORT } = process.env;
-const BASE_URL = 'api';
-const CURRENT_VERSION = 'v1';
-const BASE_PATH = `/${BASE_URL}/${CURRENT_VERSION}`;
+
+// index Paths located in the globalConsonants.js file (api/versionNumber)
+const BASE_PATH = `/${urlPath.INDEX_PATHS.BASE_URL}/${urlPath.INDEX_PATHS.CURRENT_VERSION}`;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -56,6 +57,8 @@ app.get(`${BASE_PATH}`, (req, res) => {
       `${BASE_PATH}/auth/quizzes/present`,
       `${BASE_PATH}/auth/quizzes/future`,
       `${BASE_PATH}/auth/quizzes/{id}`,
+      `${BASE_PATH}/auth/quizzes/{id}/join`,
+      `${BASE_PATH}/auth/quizzes/{id}/answers`,
     ],
   });
 });

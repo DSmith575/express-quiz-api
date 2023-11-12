@@ -1,4 +1,4 @@
-const loginPath = 'http:localhost3000/api/v1/login';
+const loginPath = 'http:localhost:3000/api/v1/login';
 
 const loginDetails = {
   username: 'SuAdmin1',

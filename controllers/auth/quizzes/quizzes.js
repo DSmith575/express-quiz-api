@@ -16,17 +16,6 @@ const createQuiz = async (req, res) => {
       });
     }
 
-    // const test = await prisma.category.findMany({
-    //   where: {
-    //     id: 9
-    //   },
-    //   include: {
-    //     quizzes: true,
-    //   }
-    // });
-    // return res.json({
-    //   data: test
-    // })
     const checkQuizNames = await prisma.quiz.findFirst({
       where: { name: String(name) },
     });
@@ -51,13 +40,6 @@ const createQuiz = async (req, res) => {
       });
     }
 
-    // DO NOT NEED TO GET INCORRECT ANSWERS ONLY COMPARE GIVEN ANSWER WITH CORRECT ANSWER
-    // return res.json({
-    //   questions: data.results,
-    // });
-
-    // console.log(questions.results);
-
     // Before creating a new category, checks already made categories and creates from the fields if does not exist
     const findQuizID = await prisma.category.findFirst({
       where: { id: Number(categoryId) },
@@ -71,26 +53,6 @@ const createQuiz = async (req, res) => {
         },
       });
     }
-    // return res.status(404).json({
-    //   msg: `Quiz with the id ${findQuizID.id} already exists`,
-    //   data: await prisma.category.findMany({}),
-    // });
-
-    // return res.json({
-    //   msg: questions.results.map((value, index) => {
-    //     console.log(`Category: ${value.category}`);
-    //     console.log(`Type: ${value.type}`);
-    //     console.log(`Difficulty: ${value.difficulty}`);
-    //     console.log(`Question: ${value.question}`);
-    //     console.log(`Correct Answer: ${value.correct_answer}`);
-    //     console.log(`Incorrect Answers: ${typeof value.incorrect_answers.join("," )}`);
-    //     console.log(''); // Add an empty line for separation
-    //   })
-    // })
-
-    // return res.json({
-    //   questionTest
-    // })
 
     // When creating the quiz we are also creating the questions model at the same time
     // using the set syntax we can pass the incorrect answers to the String[]
@@ -183,13 +145,6 @@ const getQuiz = async (req, res) => {
       statusCode: res.statusCode,
       data: findQuiz,
     });
-
-    // const userId = await prisma.quiz.findFirst({
-    //   where: {id: Number(req.params.id)},
-    //   include: {
-    //     questions: true,
-    //   }
-    // })
   } catch (error) {
     return res.status(500).json({
       statusCode: res.statusCode,
