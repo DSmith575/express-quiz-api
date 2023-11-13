@@ -25,6 +25,7 @@ const register = async (req, res) => {
 
     if (user) {
       return res.status(409).json({
+        statusCode: res.statusCode,
         msg: 'Username or Email already exists',
       });
     }
@@ -51,11 +52,13 @@ const register = async (req, res) => {
     delete user.password;
 
     return res.status(201).json({
+      statusCode: res.statusCode,
       msg: 'User successfully created',
       data: user,
     });
   } catch (error) {
     return res.status(500).json({
+      statusCode: res.statusCode,
       msg: error.message,
     });
   }

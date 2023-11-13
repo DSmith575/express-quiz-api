@@ -22,7 +22,8 @@ const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(400).json({
+        statusCode: res.statusCode,
         msg: 'Invalid email or username',
       });
     }
@@ -30,7 +31,8 @@ const login = async (req, res) => {
     const correctPassword = await bcryptjs.compare(password, user.password);
 
     if (!correctPassword) {
-      return res.status(401).json({
+      return res.status(400).json({
+        statusCode: res.statusCode,
         msg: 'Invalid password',
       });
     }
@@ -48,11 +50,13 @@ const login = async (req, res) => {
     );
 
     return res.status(200).json({
+      statusCode: res.statusCode,
       msg: `${user.username} successfully logged in`,
       token,
     });
   } catch (error) {
     return res.status(500).json({
+      statusCode: res.statusCode,
       msg: error.message,
     });
   }

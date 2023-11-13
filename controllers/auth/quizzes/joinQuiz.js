@@ -16,23 +16,18 @@ const joinQuiz = async (req, res) => {
     const { startDate, endDate } = checkQuizDate;
 
     if (startDate > currentDate) {
-      return res.json({
+      return res.status(200).json({
+        statusCode: res.statusCode,
         msg: 'Quiz has not started',
       });
     }
 
     if (endDate < currentDate) {
-      return res.json({
+      return res.status(200).json({
+        statusCode: res.statusCode,
         msg: 'Quiz has already ended',
       });
     }
-
-    // if (role !== 'BASIC_USER') {
-    //   return res.status(401).json({
-    //     statusCode: res.statusCode,
-    //     msg: 'Only basic users can participate in a quiz',
-    //   });
-    // }
 
     const checkParticipation = await prisma.userParticipateQuiz.findFirst({
       where: {
@@ -42,7 +37,8 @@ const joinQuiz = async (req, res) => {
     });
 
     if (checkParticipation && role === 'BASIC_USER') {
-      return res.status(401).json({
+      return res.status(400).json({
+        statusCode: res.statusCode,
         msg: 'You have already participated in this quiz',
       });
     }
@@ -91,13 +87,15 @@ const answerQuiz = async (req, res) => {
 
     // Unable to properly get Joi validation working for date comparisons via answering a question
     if (startDate > currentDate) {
-      return res.json({
+      return res.status(200).json({
+        statusCode: res.statusCode,
         msg: 'Quiz has not started',
       });
     }
 
     if (endDate < currentDate) {
-      return res.json({
+      return res.status(200).json({
+        statusCode: res.statusCode,
         msg: 'Quiz has already ended',
       });
     }
@@ -111,7 +109,8 @@ const answerQuiz = async (req, res) => {
     });
 
     if (checkParticipation && role === 'BASIC_USER') {
-      return res.status(401).json({
+      return res.status(403).json({
+        statusCode: res.statusCode,
         msg: 'You have already participated in this quiz',
       });
     }

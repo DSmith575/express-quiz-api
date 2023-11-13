@@ -17,6 +17,7 @@ const createQuiz = async (req, res) => {
       });
     }
 
+    // Check if the quiz name already exists
     const checkQuizNames = await prisma.quiz.findFirst({
       where: { name: String(name) },
     });
@@ -33,6 +34,7 @@ const createQuiz = async (req, res) => {
     );
     const questions = await getQuiz.json();
 
+    // Check the returned response_code value
     if (questions.response_code === 1) {
       return res.status(400).json({
         statusCode: res.statusCode,
@@ -117,7 +119,7 @@ const deleteQuiz = async (req, res) => {
       where: { id: Number(req.params.id) },
     });
 
-    return res.status(200).json({
+    return res.status(204).json({
       statusCode: res.statusCode,
       msg: `Quiz with the id ${req.params.id} successfully deleted`,
     });

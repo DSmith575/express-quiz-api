@@ -13,17 +13,19 @@ const getUser = async (req, res) => {
 
     if (!userID) {
       return res.status(404).json({
+        statusCode: res.statusCode,
         msg: `User with the id of ${req.params.id} not found`,
       });
     }
 
     if (role !== 'SUPER_ADMIN_USER' && id !== userID.id) {
       return res.status(403).json({
+        statusCode: res.statusCode,
         msg: `Not authorized to access this profile`,
       });
     }
 
-    return res.json({
+    return res.status(200).json({
       data: userID,
     });
   } catch (error) {
@@ -51,7 +53,8 @@ const getUsers = async (req, res) => {
       });
     }
 
-    return res.json({
+    return res.status(200).json({
+      statusCode: res.statusCode,
       data: users,
     });
   } catch (error) {
@@ -120,7 +123,8 @@ const updateUser = async (req, res) => {
       });
     }
 
-    return res.json({
+    return res.status(200).json({
+      statusCode: res.statusCode,
       msg: `User ${currentUsername} successfully updated`,
       data: user,
     });
