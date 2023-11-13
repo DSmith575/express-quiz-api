@@ -7,6 +7,26 @@ const joinQuiz = async (req, res) => {
   try {
     const { role } = req.user;
 
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    const checkQuizDate = await prisma.quiz.findFirst({
+      where: { id: Number(req.params.id) },
+    });
+
+    const { startDate, endDate } = checkQuizDate;
+
+    if (startDate > currentDate) {
+      return res.json({
+        msg: 'Quiz has not started',
+      });
+    }
+
+    if (endDate < currentDate) {
+      return res.json({
+        msg: 'Quiz has already ended',
+      });
+    }
+
     // if (role !== 'BASIC_USER') {
     //   return res.status(401).json({
     //     statusCode: res.statusCode,
@@ -37,7 +57,48 @@ const joinQuiz = async (req, res) => {
 
 const answerQuiz = async (req, res) => {
   try {
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Including questions to get the length of total questions in quiz and for mapping correct answers for comparison
+    const quizAnswers = await prisma.quiz.findFirst({
+      where: { id: Number(req.params.id) },
+      include: {
+        questions: true,
+      },
+    });
+
+    const { startDate, endDate, questions } = quizAnswers;
+
+    // Get the length of question.
+    // Used for calculating average score
+    // and for checking if the user has answered all questions
+    const quizTotalQuestions = questions.length;
+
+    if (startDate > currentDate) {
+      return res.json({
+        msg: 'Quiz has not started',
+      });
+    }
+
+    if (endDate < currentDate) {
+      return res.json({
+        msg: 'Quiz has already ended',
+      });
+    }
+
     const answers = req.body;
+
+    if (Object.keys(answers).length === 0) {
+      return res.json({
+        msg: 'Answers must be submitted in array format',
+      });
+    }
+
+    if (answers.length < quizTotalQuestions) {
+      return res.json({
+        msg: `Please answer all ${quizTotalQuestions} questions`,
+      });
+    }
 
     const { id, username } = req.user;
 
@@ -55,17 +116,8 @@ const answerQuiz = async (req, res) => {
       });
     }
 
-    const quizAnswers = await prisma.quiz.findFirst({
-      where: { id: Number(req.params.id) },
-      include: {
-        questions: true,
-      },
-    });
-
     // Map to get a list of all correct answers
     const quizCorrectAnswer = quizAnswers.questions.map((question) => question.correctAnswer);
-    // Get the length of quizCorrect Answer for calculating the average score
-    const totalQuestions = quizCorrectAnswer.length;
 
     // map users answers and check if it is strictly equal to the correct answer and pushes true/false values
     // Object values: users ID, quizID, each questionID and the users answer
@@ -83,7 +135,7 @@ const answerQuiz = async (req, res) => {
 
     // Get the average score from the users answers
     // averageCalc.calculate = 100
-    const averageScore = (userCorrectAnswers / totalQuestions) * averageCalc.QUIZ_AVERAGE.calculate;
+    const averageScore = (userCorrectAnswers / quizTotalQuestions) * averageCalc.QUIZ_AVERAGE.calculate;
 
     // Prisma createMany on the users answers
     await prisma.userQuestionAnswer.createMany({
@@ -110,7 +162,7 @@ const answerQuiz = async (req, res) => {
     return res.status(200).json({
       statusCode: res.statusCode,
       msg: `${username} has successfully in ${quizAnswers.name}`,
-      userScore: `${userCorrectAnswers}/${totalQuestions}`,
+      userScore: `${userCorrectAnswers}/${quizTotalQuestions}`,
       averageScore: `${averageScore}%`,
     });
   } catch (error) {
