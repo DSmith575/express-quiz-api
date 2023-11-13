@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx mocha --timeout 10000 --exit",
     "dev": "nodemon --env-file=.env index.js",
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate reset && npx prisma migrate dev --skip-seed",
@@ -44,12 +44,15 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
+    "mocha": "^10.2.0",
     "nodemon": "^3.0.1",
     "prettier": "3.0.3",
     "prisma": "^5.5.0"
