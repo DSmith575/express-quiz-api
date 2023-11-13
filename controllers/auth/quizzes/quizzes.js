@@ -132,7 +132,29 @@ const getQuiz = async (req, res) => {
   try {
     const findQuiz = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
+      include: {
+        userQuizScores: true,
+      },
     });
+
+    // const checkP = await prisma.quiz.findFirst({
+    //   where: { id: Number(req.params.id) },
+    //   include: {
+    //     userQuestionAnswers: {
+    //       where: { userId: Number(id) },
+    //     },
+    //     userParticipateQuizzes: {
+    //       where: { userId: Number(id) },
+    //     },
+    //     userQuizScores: {
+    //       where: { userId: Number(id) },
+    //     },
+    //   },
+    // });
+
+    // return res.json({
+    //   msg: checkP,
+    // })
 
     if (!findQuiz) {
       return res.status(404).json({
@@ -140,6 +162,7 @@ const getQuiz = async (req, res) => {
         msg: `No quiz with the id ${req.params.id} found`,
       });
     }
+
 
     return res.status(200).json({
       statusCode: res.statusCode,
