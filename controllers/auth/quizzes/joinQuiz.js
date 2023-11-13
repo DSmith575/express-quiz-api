@@ -27,12 +27,12 @@ const joinQuiz = async (req, res) => {
       });
     }
 
-    // if (role !== 'BASIC_USER') {
-    //   return res.status(401).json({
-    //     statusCode: res.statusCode,
-    //     msg: 'Only basic users can participate in a quiz',
-    //   });
-    // }
+    if (role !== 'BASIC_USER') {
+      return res.status(401).json({
+        statusCode: res.statusCode,
+        msg: 'Only basic users can participate in a quiz',
+      });
+    }
 
     const getQuestions = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
@@ -100,7 +100,7 @@ const answerQuiz = async (req, res) => {
       });
     }
 
-    const { id, username } = req.user;
+    const { id, username, role } = req.user;
 
     // check if already parcitipated.
     const checkParticipation = await prisma.userParticipateQuiz.findFirst({
@@ -110,7 +110,7 @@ const answerQuiz = async (req, res) => {
       },
     });
 
-    if (checkParticipation) {
+    if (checkParticipation && role === 'BASIC_USER') {
       return res.status(401).json({
         msg: 'You have already participated in this quiz',
       });
