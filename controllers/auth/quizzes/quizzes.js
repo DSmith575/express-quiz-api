@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import quizConsonants from '../../../utils/consonants/globalConsonants.js';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
@@ -134,27 +135,11 @@ const getQuiz = async (req, res) => {
       where: { id: Number(req.params.id) },
       include: {
         userQuizScores: true,
+        questions: {
+          where: { quizId: Number(req.params.id) },
+        },
       },
     });
-
-    // const checkP = await prisma.quiz.findFirst({
-    //   where: { id: Number(req.params.id) },
-    //   include: {
-    //     userQuestionAnswers: {
-    //       where: { userId: Number(id) },
-    //     },
-    //     userParticipateQuizzes: {
-    //       where: { userId: Number(id) },
-    //     },
-    //     userQuizScores: {
-    //       where: { userId: Number(id) },
-    //     },
-    //   },
-    // });
-
-    // return res.json({
-    //   msg: checkP,
-    // })
 
     if (!findQuiz) {
       return res.status(404).json({
@@ -163,9 +148,54 @@ const getQuiz = async (req, res) => {
       });
     }
 
+    const totalQuestions = findQuiz.questions.length;
+
+    // Map the questions and get the correct and incorrect answers
+    const quizQuestions = findQuiz.questions.map((question) => ({
+      correctAnswer: question.correctAnswer,
+      incorrectAnswers: question.incorrectAnswers,
+    }));
+
+    // Using reduce to get the total number of each users score
+    // Then getting the average with the userAverage / the length of the userQuiz scores
+    // Using floor and using the average / totalQuestions * the calculated average const (100)
+    const getUserAverage = findQuiz.userQuizScores.reduce((cur, val) => cur + val.score, 0);
+    const averageScore = getUserAverage / findQuiz.userQuizScores.length;
+    const allUserAverageScore = `${Math.floor((averageScore / totalQuestions) * quizConsonants.QUIZ_AVERAGE.calculate)}%`;
+
+    // get a list of userIds and their score for the quiz
+    const getAllUserScores = findQuiz.userQuizScores.map((score) => ({
+      userId: score.userId,
+      score: score.score,
+    }));
+
+    // Get the overall winner of the quiz sorting scores from highest to lowest
+    const getHighestScore = getAllUserScores.sort((a, b) => b.score - a.score);
+
+    // using the userId from get highest score to return the username for overall winner
+    const getHighestScoreUsername = await prisma.user.findFirst({
+      where: { id: Number(getHighestScore[0].userId) },
+    });
+
+    // Custom return object just for displaying information in a certain order
+    const quizInformation = {
+      id: findQuiz.id,
+      name: findQuiz.name,
+      categoryId: findQuiz.categoryId,
+      type: findQuiz.type,
+      difficulty: findQuiz.difficulty,
+      startDate: findQuiz.startDate,
+      endDate: findQuiz.endDate,
+      totalQuestions,
+      allUserAverageScore,
+      overallWinner: getHighestScoreUsername.username,
+      quizQuestions,
+      scores: findQuiz.userQuizScores,
+    };
+
     return res.status(200).json({
       statusCode: res.statusCode,
-      data: findQuiz,
+      quizInformation,
     });
   } catch (error) {
     return res.status(500).json({
