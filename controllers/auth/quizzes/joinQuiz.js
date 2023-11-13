@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const joinQuiz = async (req, res) => {
   try {
-    const { role } = req.user;
+    const { id, role } = req.user;
 
     const currentDate = new Date().toISOString().split('T')[0];
 
@@ -27,10 +27,23 @@ const joinQuiz = async (req, res) => {
       });
     }
 
-    if (role !== 'BASIC_USER') {
+    // if (role !== 'BASIC_USER') {
+    //   return res.status(401).json({
+    //     statusCode: res.statusCode,
+    //     msg: 'Only basic users can participate in a quiz',
+    //   });
+    // }
+
+    const checkParticipation = await prisma.userParticipateQuiz.findFirst({
+      where: {
+        userId: id,
+        quizId: Number(req.params.id),
+      },
+    });
+
+    if (checkParticipation && role === 'BASIC_USER') {
       return res.status(401).json({
-        statusCode: res.statusCode,
-        msg: 'Only basic users can participate in a quiz',
+        msg: 'You have already participated in this quiz',
       });
     }
 
