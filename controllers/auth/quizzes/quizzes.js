@@ -163,7 +163,6 @@ const getQuiz = async (req, res) => {
       });
     }
 
-
     return res.status(200).json({
       statusCode: res.statusCode,
       data: findQuiz,

@@ -81,12 +81,15 @@ const answerQuiz = async (req, res) => {
     });
 
     const { startDate, endDate, questions } = quizAnswers;
+    const answers = req.body;
+    const { id, username, role } = req.user;
 
     // Get the length of question.
     // Used for calculating average score
     // and for checking if the user has answered all questions
     const quizTotalQuestions = questions.length;
 
+    // Unable to properly get Joi validation working for date comparisons via answering a question
     if (startDate > currentDate) {
       return res.json({
         msg: 'Quiz has not started',
@@ -99,23 +102,7 @@ const answerQuiz = async (req, res) => {
       });
     }
 
-    const answers = req.body;
-
-    if (Object.keys(answers).length === 0) {
-      return res.json({
-        msg: 'Answers must be submitted in array format',
-      });
-    }
-
-    if (answers.length < quizTotalQuestions) {
-      return res.json({
-        msg: `Please answer all ${quizTotalQuestions} questions`,
-      });
-    }
-
-    const { id, username, role } = req.user;
-
-    // check if already parcitipated.
+    // check if already participated.
     const checkParticipation = await prisma.userParticipateQuiz.findFirst({
       where: {
         userId: id,
