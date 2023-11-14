@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import averageCalc from '../../../utils/consonants/globalConsonants.js';
+import globalConst from '../../../utils/consonants/globalConsonants.js';
+import checkQuizDates from '../../../utils/dateTime/dateComparison.js';
 
 const prisma = new PrismaClient();
 
@@ -7,25 +8,18 @@ const joinQuiz = async (req, res) => {
   try {
     const { id, role } = req.user;
 
-    const currentDate = new Date().toISOString().split('T')[0];
-
     const checkQuizDate = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
     });
 
     const { startDate, endDate } = checkQuizDate;
 
-    if (startDate > currentDate) {
+    // Unable to properly get Joi validation working for date comparisons via answering a question
+    const { status, msg } = checkQuizDates(startDate, endDate);
+    if (status === globalConst.QUIZ_DATE_CHECK.started || status === globalConst.QUIZ_DATE_CHECK.ended) {
       return res.status(200).json({
         statusCode: res.statusCode,
-        msg: 'Quiz has not started',
-      });
-    }
-
-    if (endDate < currentDate) {
-      return res.status(200).json({
-        statusCode: res.statusCode,
-        msg: 'Quiz has already ended',
+        msg,
       });
     }
 
@@ -67,8 +61,6 @@ const joinQuiz = async (req, res) => {
 
 const answerQuiz = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
-
     // Including questions to get the length of total questions in quiz and for mapping correct answers for comparison
     const quizAnswers = await prisma.quiz.findFirst({
       where: { id: Number(req.params.id) },
@@ -87,19 +79,26 @@ const answerQuiz = async (req, res) => {
     const quizTotalQuestions = questions.length;
 
     // Unable to properly get Joi validation working for date comparisons via answering a question
-    if (startDate > currentDate) {
+    const { status, msg } = checkQuizDates(startDate, endDate);
+    if (status === globalConst.QUIZ_DATE_CHECK.started || status === globalConst.QUIZ_DATE_CHECK.ended) {
       return res.status(200).json({
         statusCode: res.statusCode,
-        msg: 'Quiz has not started',
+        msg,
       });
     }
+    // if (startDate > currentDate) {
+    //   return res.status(200).json({
+    //     statusCode: res.statusCode,
+    //     msg: 'Quiz has not started',
+    //   });
+    // }
 
-    if (endDate < currentDate) {
-      return res.status(200).json({
-        statusCode: res.statusCode,
-        msg: 'Quiz has already ended',
-      });
-    }
+    // if (endDate < currentDate) {
+    //   return res.status(200).json({
+    //     statusCode: res.statusCode,
+    //     msg: 'Quiz has already ended',
+    //   });
+    // }
 
     // check if already participated.
     const checkParticipation = await prisma.userParticipateQuiz.findFirst({
@@ -134,8 +133,8 @@ const answerQuiz = async (req, res) => {
     const userCorrectAnswers = userAnswers.filter((answer) => answer.isCorrect).length;
 
     // Get the average score from the users answers
-    // averageCalc.calculate = 100
-    const averageScore = (userCorrectAnswers / quizTotalQuestions) * averageCalc.QUIZ_AVERAGE.calculate;
+    // globalConst.calculate = 100
+    const averageScore = (userCorrectAnswers / quizTotalQuestions) * globalConst.QUIZ_AVERAGE.calculate;
 
     // Prisma createMany on the users answers
     await prisma.userQuestionAnswer.createMany({

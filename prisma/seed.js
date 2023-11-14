@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import bcryptjs from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
+import saltHashPassword from '../utils/userRegister/passwordUtils.js';
+import genUuidSeed from '../utils/userRegister/registeruuid.js';
 // assert seems to be required for the JSON file to work? Not to sure why that is.
 import superAdmins from '../utils/seedScripts/superUsers.json' assert { type: 'json' };
 
@@ -29,10 +29,9 @@ const main = async () => {
       if (!existingUser) {
         const { firstName, lastName, username, email, password, role } = superSeed;
 
-        const salt = await bcryptjs.genSalt();
-        const hashedPassword = await bcryptjs.hash(password, salt);
+        const hashedPassword = await saltHashPassword(password);
+        const profilePictureSeed = genUuidSeed();
 
-        const profilePictureSeed = uuidv4();
         const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
 
         await prisma.user.create({
@@ -47,8 +46,7 @@ const main = async () => {
           },
         });
 
-        console.log(`User ${superSeed.username} created successfully`)
-        
+        console.log(`User ${superSeed.username} created successfully`);
       } else {
         console.log(`User with username ${superSeed.username} or email ${superSeed.email} already exists.`);
       }

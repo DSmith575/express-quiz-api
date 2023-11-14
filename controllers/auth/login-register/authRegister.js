@@ -1,6 +1,6 @@
-import bcryptjs from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client';
+import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
+import genUuidSeed from '../../../utils/userRegister/registeruuid.js';
 
 const PROFILE_URL = process.env.USER_PROFILE_PIC;
 
@@ -30,11 +30,12 @@ const register = async (req, res) => {
       });
     }
 
-    const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(password, salt);
+    // hashing password via function in utils/userRegister
+    const hashedPassword = await saltHashPassword(password);
 
-    // Using uuid package to generate a random seed for each user created
-    const profilePictureSeed = uuidv4();
+    // Using uuid package to generate a random seed for each user created, this is done with a function created in utils/userRegister
+    const profilePictureSeed = genUuidSeed();
+
     const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
 
     user = await prisma.user.create({

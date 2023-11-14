@@ -12,4 +12,9 @@ const QUIZ_AVERAGE = {
   calculate: 100,
 };
 
-export default { USER_ROLES, INDEX_PATHS, QUIZ_AVERAGE };
+const QUIZ_DATE_CHECK = {
+  notStarted: 'quizNotStarted',
+  ended: 'quizEnded',
+};
+
+export default { USER_ROLES, INDEX_PATHS, QUIZ_AVERAGE, QUIZ_DATE_CHECK };

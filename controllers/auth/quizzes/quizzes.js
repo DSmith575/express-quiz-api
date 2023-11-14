@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import quizConsonants from '../../../utils/consonants/globalConsonants.js';
-import axios from 'axios';
+import { quizCreate } from '../../../utils/axios/instance.js';
 
 const prisma = new PrismaClient();
 
@@ -29,10 +29,17 @@ const createQuiz = async (req, res) => {
       });
     }
 
-    const getQuiz = await fetch(
-      `https://opentdb.com/api.php?amount=${totalQuestions}&category=${categoryId}&difficulty=${difficulty}&type=${type}`,
-    );
-    const questions = await getQuiz.json();
+    console.log(quizCreate);
+    const getQuiz = await quizCreate.get('api.php?', {
+      params: {
+        amount: totalQuestions,
+        category: categoryId,
+        difficulty: difficulty,
+        type: type,
+      },
+    });
+
+    const questions = await getQuiz.data;
 
     // Check the returned response_code value
     if (questions.response_code === 1) {

@@ -14,9 +14,12 @@
 import axios from 'axios';
 
 const GIST_URL = process.env.GIT_GIST_URL;
+const QUIZ_URL = process.env.QUIZ_DATABASE;
 
-const seedGist = axios.create({
+export const seedGist = axios.create({
   baseURL: GIST_URL,
 });
 
-export default seedGist;
+export const quizCreate = axios.create({
+  baseURL: QUIZ_URL,
+});

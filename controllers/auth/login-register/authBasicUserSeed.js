@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import bcryptjs from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
-import seedGist from '../../../utils/axios/instance.js';
+import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
+import genUuidSeed from '../../../utils/userRegister/registeruuid.js';
+import { seedGist } from '../../../utils/axios/instance.js';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
+import userRoles from '../../../utils/consonants/globalConsonants.js';
 
 // This does not check if the users already exists
 // It will still return a seed successful for basic users, but they are not duplicated
@@ -14,8 +16,8 @@ const seedBasicUsers = async (req, res) => {
   try {
     const { role } = req.user;
 
-    if (role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    if (role !== userRoles.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'Not authorized to access this route',
       });
@@ -31,10 +33,9 @@ const seedBasicUsers = async (req, res) => {
 
       const { firstName, lastName, username, email, password } = basicUser;
 
-      const salt = await bcryptjs.genSalt();
-      const hashedPassword = await bcryptjs.hash(password, salt);
+      const hashedPassword = await saltHashPassword(password);
+      const profilePictureSeed = genUuidSeed();
 
-      const profilePictureSeed = uuidv4();
       const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
 
       await prisma.user.create({
@@ -49,13 +50,13 @@ const seedBasicUsers = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       msg: 'Basic users seeded successfully',
     });
     // const registerSeed = await registerUsers.post('auth/register', ...data);
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
