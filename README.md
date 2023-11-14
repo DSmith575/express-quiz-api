@@ -93,3 +93,28 @@ To check and format code for errors run `npm run lint`
 ## Example requests <a name="examples"/>
 
 ## References <a name="ref"/>
+
+| Opentdb | uuid |
+| ------- | ---- |
+| [Categories](https://opentdb.com/api_category.php) | [uuid](https://www.uuidgenerator.net/dev-corner/javascript) |
+| [Response for incorrect/empty quiz types](https://opentdb.com/api.php?amount=10&category=10&difficulty=easy&type=boolean) |
+
+| App Dev | Axios | Prisma |
+| ------- | ----- | ------ |
+| [Intro/Inter AppDev](https://github.com/otago-polytechnic-bit-courses/ID608001-intermediate-app-dev-concepts) | [Axios instance](https://axios-http.com/docs/instance) | [Prisma API](https://www.prisma.io/docs/reference) |
+| | | [Prisma arrays](https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-scalar-lists-arrays) |
+| | | [Prisma lt/gte](https://www.prisma.io/docs/concepts/components/prisma-client/filtering-and-sorting) |
+
+
+
+| JSDoc | Prettier | Eslint |
+| ----- | -------- | ------ |
+| [JSDocs](https://jsdoc.app/) | [Prettier rules](https://axios-http.com/docs/config_defaults) | [Eslint rules](https://eslint.org/docs/latest/rules/) |
+
+| Joi | JoiDate | JoiValidation |
+| --- | ------- | ------------- |
+| [Joi Documentation](https://joi.dev/api/?v=17.9.1) | [joi-date](https://joi.dev/module/joi-date/) |[Joi validation helpers](https://joi.dev/api/?v=17.9.1#validation-helpers) |
+| | | [Date comparison](https://github.com/hapijs/joi/issues/2288) |
+| | | [Date comparison 2](https://github.com/hapijs/joi/issues/2371) |
+| | | [Joi types](https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk) |
+| | | [Joi passing dates](https://github.com/hapijs/joi/issues/794) |
