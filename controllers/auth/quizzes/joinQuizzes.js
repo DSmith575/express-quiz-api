@@ -36,6 +36,7 @@ const joinQuiz = async (req, res) => {
       },
     });
 
+    // Check if the userId is already in the userParticipateQuiz and is a basic user
     if (checkParticipation && role === 'BASIC_USER') {
       return res.status(400).json({
         statusCode: res.statusCode,
