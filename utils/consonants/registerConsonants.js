@@ -1,9 +1,10 @@
 /**
- * @description Joi schema validation messages
+ * @description Util file for storing register Joi validation consts
  * @file registerConsonants.js
+ *
  * @author Deacon Smith
- * @created 5/11/2023
- * @updated 5/11/2023
+ * @created 05/11/2023
+ * @updated 15/11/2023
  *
  * @property {number} min - The minimum length allowed for the field.
  * @property {number} max - The maximum length allowed for the field.

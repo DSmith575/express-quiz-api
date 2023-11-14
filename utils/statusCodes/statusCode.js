@@ -1,3 +1,12 @@
+/**
+* @description Object containing a list of status codes
+* @file statusCodes.js
+
+* @author Deacon Smith
+* @created 05/11/2023
+* @updated 15/11/2023
+*/
+
 const STATUS_CODES = {
   OK: 200,
   CREATED: 201,

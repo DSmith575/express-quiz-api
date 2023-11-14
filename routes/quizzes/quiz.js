@@ -1,9 +1,10 @@
 /**
- * @description Auth route that handles the auth.js controller
- * @file auth.js
+ * @description Endpoint routes that handles the quiz.js controller
+ * @file quiz.js
+ *
  * @author Deacon Smith
- * @created 4/11/2023
- * @updated 12/11/2023
+ * @created 05/11/2023
+ * @updated 15/11/2023
  */
 
 import express from 'express';

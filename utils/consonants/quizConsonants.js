@@ -1,3 +1,12 @@
+/**
+ * @description Util file for storing quiz consts
+ * @file quizConsonants.js
+ *
+ * @author Deacon Smith
+ * @created 06-11-2023
+ * @updated 15-11-2023
+ */
+
 const QUIZ_NAME = {
   min: 5,
   max: 30,

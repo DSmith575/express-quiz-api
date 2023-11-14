@@ -1,3 +1,13 @@
+/**
+ * @description Endpoint routes that handles the profiles.js controller
+ * @file profiles.js
+ *
+ *
+ * @author Deacon Smith
+ * @created 06-11-2023
+ * @updated 15-11-2023
+ */
+
 import express from 'express';
 
 import { getUser, getUsers, updateUser, deleteUser } from '../../controllers/auth/users/profiles.js';

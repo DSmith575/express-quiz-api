@@ -1,9 +1,10 @@
 /**
-* @description Joi schema validation messages
+* @description A list of reusable messages for Joi schema validation
 * @file joiSchemaMessages.js
+
 * @author Deacon Smith
-* @created 5/11/2023
-* @updated 9/11/2023
+* @created 05/11/2023
+* @updated 15/11/2023
 *
  * @property {Function} base - Basic validation error message.
  * @property {Function} min - Minimum length validation error message.

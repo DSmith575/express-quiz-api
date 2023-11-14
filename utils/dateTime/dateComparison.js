@@ -1,3 +1,12 @@
+/**
+ * @description Reusable function to check dates for when attempting to join and answer a quiz
+ * @file dateComparison.js
+ *
+ * @author Deacon Smith
+ * @created 15-11-2023
+ * @updated 15-11-2023
+ */
+
 import getCurrentDate from './currentDate.js';
 import quizDates from '../consonants/globalConsonants.js';
 
