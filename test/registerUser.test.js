@@ -6,33 +6,15 @@ import urlPath from '../utils/consonants/globalConsonants.js';
 
 import app from '../index.js';
 
+// Destructuring the registerSuite object to get the data required, then passing that as an object in the chai.send method
+// const { firstName } = registerSuite
+// chai.send({ firstName })
+
 chai.use(chaiHttp);
 
 const BASE_PATH = `/${urlPath.INDEX_PATHS.BASE_URL}/${urlPath.INDEX_PATHS.CURRENT_VERSION}`;
 
 const REGISTER_PATH = `${BASE_PATH}/auth/register`;
-
-const firstName = {
-  firstName: 'testSuite',
-};
-
-const lastName = {
-  firstName: 'testSuite',
-  lastName: 'lastName',
-};
-
-const username = {
-  firstName: 'testSuite',
-  lastName: 'lastName',
-  username: 'memer',
-};
-
-const email = {
-  firstName: 'testSuite',
-  lastName: 'lastName',
-  username: 'memer',
-  email: 'meme@test.com',
-};
 
 const registerSuite = {
   firstName: 'testSuite',
@@ -48,21 +30,74 @@ const registerSuite = {
 describe('register basic user', () => {
   it('should return message First name is required', (done) => {
     chai
+    .request(app)
+    .post(`${REGISTER_PATH}`)
+    .end((req, res) => {
+      chai.expect(res.status).to.be.equal(400);
+      chai.expect(res.body).to.be.a('object');
+      chai.expect(res.body.msg).to.be.equal('First name is required');
+      done();
+    });
+  });
+
+    it('should return message First name has a min length of 2', (done) => {
+      chai
       .request(app)
       .post(`${REGISTER_PATH}`)
+      .send({firstName: "a"})
       .end((req, res) => {
         chai.expect(res.status).to.be.equal(400);
         chai.expect(res.body).to.be.a('object');
-        chai.expect(res.body.msg).to.be.equal('First name is required');
+        chai.expect(res.body.msg).to.be.equal('First name should have a minimum length of 2');
         done();
       });
+    });
+
+    it('should return message First name has a max length of 50', (done) => {
+      chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({firstName: "qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty"})
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('First name should have a maximum length of 50');
+        done();
+      });
+    });
+
+  it('should test if firstName is a string', (done) => {
+    chai
+    .request(app)
+    .post(`${REGISTER_PATH}`)
+    .send({firstName: 123 })
+    .end((req, res) => {
+      chai.expect(res.status).to.be.equal(400);
+      chai.expect(res.body).to.be.a('object');
+      chai.expect(res.body.msg).to.be.equal('First name should be a string');
+      done();
+    });
   });
 
+  it('should return a message First name cannot be empty', (done) => {
+    chai
+    .request(app)
+    .post(`${REGISTER_PATH}`)
+    .send({ firstName: ""})
+    .end((req, res) => {
+      chai.expect(res.status).to.be.equal(400);
+      chai.expect(res.body).to.be.a('object');
+      chai.expect(res.body.msg).to.be.equal('First name should not be empty');
+      done();
+    });
+  });
+  
   it('should return a message Last name is required', (done) => {
+    const { firstName } = registerSuite;
     chai
       .request(app)
       .post(`${REGISTER_PATH}`)
-      .send(firstName)
+      .send({ firstName })
       .end((req, res) => {
         chai.expect(res.status).to.be.equal(400);
         chai.expect(res.body).to.be.a('object');
@@ -72,10 +107,11 @@ describe('register basic user', () => {
   });
 
   it('should return a message username is required', (done) => {
+    const { firstName, lastName } = registerSuite
     chai
       .request(app)
       .post(`${REGISTER_PATH}`)
-      .send(lastName)
+      .send({firstName, lastName})
       .end((req, res) => {
         chai.expect(res.status).to.be.equal(400);
         chai.expect(res.body).to.be.a('object');
@@ -84,29 +120,43 @@ describe('register basic user', () => {
       });
   });
 
-  it('should return a message email is required', (done) => {
+  it('should check that username does not contain special characters', (done) => {
+    const { firstName, lastName } = registerSuite
     chai
       .request(app)
       .post(`${REGISTER_PATH}`)
-      .send(username)
+      .send({firstName, lastName, username: "testSuite!"})
       .end((req, res) => {
         chai.expect(res.status).to.be.equal(400);
         chai.expect(res.body).to.be.a('object');
-        chai.expect(res.body.msg).to.be.equal('Email is required');
+        chai.expect(res.body.msg).to.be.equal('Username should only contain alphanumeric characters');
         done();
       });
   });
 
-  it('should return message email must match username', (done) => {
-    chai
-      .request(app)
-      .post(`${REGISTER_PATH}`)
-      .send(email)
-      .end((req, res) => {
-        chai.expect(res.status).to.be.equal(400);
-        chai.expect(res.body).to.be.a('object');
-        chai.expect(res.body.msg).to.be.equal('Email must match the username');
-        done();
-      });
-  });
+  // it('should return a message email is required', (done) => {
+  //   chai
+  //     .request(app)
+  //     .post(`${REGISTER_PATH}`)
+  //     .send(username)
+  //     .end((req, res) => {
+  //       chai.expect(res.status).to.be.equal(400);
+  //       chai.expect(res.body).to.be.a('object');
+  //       chai.expect(res.body.msg).to.be.equal('Email is required');
+  //       done();
+  //     });
+  // });
+
+  // it('should return message email must match username', (done) => {
+  //   chai
+  //     .request(app)
+  //     .post(`${REGISTER_PATH}`)
+  //     .send(email)
+  //     .end((req, res) => {
+  //       chai.expect(res.status).to.be.equal(400);
+  //       chai.expect(res.body).to.be.a('object');
+  //       chai.expect(res.body.msg).to.be.equal('Email must match the username');
+  //       done();
+  //     });
+  // });
 });

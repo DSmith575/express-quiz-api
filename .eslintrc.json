@@ -29,7 +29,10 @@
       "ignorePackages",
       {
         "js": "always"
-      }
+      },
+      {
+        "endOfLine": "auto"
+      },
     ]
   }
 }

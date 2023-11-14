@@ -20,6 +20,7 @@ const login = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
+        // Checking if a username or email is already in the database
     const user = await prisma.user.findFirst({
       where: {
         OR: [
@@ -40,6 +41,7 @@ const login = async (req, res) => {
       });
     }
 
+    // Comparing password supplied with the confirm password supplied
     const correctPassword = await bcryptjs.compare(password, user.password);
 
     if (!correctPassword) {

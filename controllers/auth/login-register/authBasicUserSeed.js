@@ -44,6 +44,7 @@ const seedBasicUsers = async (req, res) => {
 
       const { firstName, lastName, username, email, password } = basicUser;
 
+            // Hash&salt password and generate random seed for profile pictures
       const hashedPassword = await saltHashPassword(password);
       const profilePictureSeed = genUuidSeed();
 
