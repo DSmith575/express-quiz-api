@@ -9,9 +9,9 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import cacheRoute from './middleware/cacheRoute.js';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
+import cacheRoute from './middleware/cacheRoute.js';
 
 import auth from './routes/login-register/auth-process.js';
 import profile from './routes/users/profiles.js';
