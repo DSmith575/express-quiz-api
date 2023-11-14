@@ -5,18 +5,19 @@
  * @author Deacon Smith
  *
  * @created 4/11/2023
- * @updated 4/11/2023
+ * @updated 14/11/2023
  *
  */
 
 import jwt from 'jsonwebtoken';
+import statCodes from '../utils/statusCodes/statusCode.js';
 
 const authRoute = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(403).json({
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'No token provided',
       });
@@ -30,7 +31,7 @@ const authRoute = (req, res, next) => {
 
     return next();
   } catch (error) {
-    return res.status(403).json({
+    return res.status(statCodes.FORBIDDEN).json({
       msg: 'Not authorized to access this route',
     });
   }

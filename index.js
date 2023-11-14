@@ -41,12 +41,14 @@ app.use(`${BASE_PATH}/auth`, auth);
 app.use(`${BASE_PATH}/auth/users`, profile);
 app.use(`${BASE_PATH}/auth/quizzes`, quiz);
 
+// When attempting to connect to path without /api/v1 will display the correct route
 app.get('/', (req, res) => {
   return res.json({
     endpoints: [`${BASE_PATH}`],
   });
 });
 
+// returns a list of endpoints when attempting to connect to /api/v1
 app.get(`${BASE_PATH}`, (req, res) => {
   return res.json({
     endpoints: [
@@ -63,6 +65,8 @@ app.get(`${BASE_PATH}`, (req, res) => {
       `${BASE_PATH}/auth/quizzes/{id}`,
       `${BASE_PATH}/auth/quizzes/{id}/join`,
       `${BASE_PATH}/auth/quizzes/{id}/answers`,
+      `${BASE_PATH}/auth/quizzes/scores`,
+      `${BASE_PATH}/auth/quizzes/{id}/scores`,
     ],
   });
 });

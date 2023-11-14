@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import quizConsonants from '../../../utils/consonants/globalConsonants.js';
 import { quizCreate } from '../../../utils/axios/instance.js';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
+import getCurrentDate from '../../../utils/dateTime/currentDate.js';
 
 const prisma = new PrismaClient();
 
@@ -10,8 +12,8 @@ const createQuiz = async (req, res) => {
 
     const { role } = req.user;
 
-    if (role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    if (role !== quizConsonants.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'Not authorized to access this route',
       });
@@ -23,13 +25,12 @@ const createQuiz = async (req, res) => {
     });
 
     if (checkQuizNames) {
-      return res.status(409).json({
+      return res.status(statCodes.CONFLICT).json({
         statusCode: res.statusCode,
         msg: 'Quiz name already exists',
       });
     }
 
-    console.log(quizCreate);
     const getQuiz = await quizCreate.get('api.php?', {
       params: {
         amount: totalQuestions,
@@ -43,7 +44,7 @@ const createQuiz = async (req, res) => {
 
     // Check the returned response_code value
     if (questions.response_code === 1) {
-      return res.status(400).json({
+      return res.status(statCodes.BAD_REQUEST).json({
         statusCode: res.statusCode,
         msg: 'Quiz category does not contain any questions for this type',
         error: 'Some data is missing or empty',
@@ -87,13 +88,13 @@ const createQuiz = async (req, res) => {
       },
     });
 
-    return res.status(201).json({
+    return res.status(statCodes.CREATED).json({
       statusCode: res.statusCode,
       msg: 'Quiz successfully created',
       data: quizCreation,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -108,15 +109,15 @@ const deleteQuiz = async (req, res) => {
 
     const { role } = req.user;
 
-    if (role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    if (role !== quizConsonants.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'You are not authorized to access this route',
       });
     }
 
     if (!quizId) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No quiz with the id ${req.params.id} exists`,
       });
@@ -126,12 +127,12 @@ const deleteQuiz = async (req, res) => {
       where: { id: Number(req.params.id) },
     });
 
-    return res.status(204).json({
+    return res.status(statCodes.NO_CONTENT).json({
       statusCode: res.statusCode,
       msg: `Quiz with the id ${req.params.id} successfully deleted`,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -151,7 +152,7 @@ const getQuiz = async (req, res) => {
     });
 
     if (!findQuiz) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No quiz with the id ${req.params.id} found`,
       });
@@ -202,12 +203,12 @@ const getQuiz = async (req, res) => {
       scores: findQuiz.userQuizScores,
     };
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       quizInformation,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -219,17 +220,17 @@ const getAllQuizzes = async (req, res) => {
     const getAllQuiz = await prisma.quiz.findMany({});
 
     if (getAllQuiz.length === 0) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No Quizzes found`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       data: getAllQuiz,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -238,7 +239,7 @@ const getAllQuizzes = async (req, res) => {
 
 const getPastQuizzes = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
+    const currentDate = getCurrentDate();
 
     const pastQuiz = await prisma.quiz.findMany({
       where: {
@@ -249,18 +250,18 @@ const getPastQuizzes = async (req, res) => {
     });
 
     if (pastQuiz.length === 0) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No past quizzes found`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       data: pastQuiz,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       msg: error.message,
     });
   }
@@ -268,7 +269,7 @@ const getPastQuizzes = async (req, res) => {
 
 const getPresentQuizzes = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
+    const currentDate = getCurrentDate();
 
     const presentQuiz = await prisma.quiz.findMany({
       where: {
@@ -282,18 +283,18 @@ const getPresentQuizzes = async (req, res) => {
     });
 
     if (presentQuiz.length === 0) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No present quizzes found`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       data: presentQuiz,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -302,7 +303,7 @@ const getPresentQuizzes = async (req, res) => {
 
 const getFutureQuizzes = async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
+    const currentDate = getCurrentDate();
 
     const futureQuiz = await prisma.quiz.findMany({
       where: {
@@ -313,18 +314,18 @@ const getFutureQuizzes = async (req, res) => {
     });
 
     if (futureQuiz.length === 0) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No future quizzes found`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       data: futureQuiz,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });

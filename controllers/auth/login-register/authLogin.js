@@ -1,6 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,7 @@ const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(statCodes.BAD_REQUEST).json({
         statusCode: res.statusCode,
         msg: 'Invalid email or username',
       });
@@ -31,7 +32,7 @@ const login = async (req, res) => {
     const correctPassword = await bcryptjs.compare(password, user.password);
 
     if (!correctPassword) {
-      return res.status(400).json({
+      return res.status(statCodes.BAD_REQUEST).json({
         statusCode: res.statusCode,
         msg: 'Invalid password',
       });
@@ -49,13 +50,13 @@ const login = async (req, res) => {
       { expiresIn: JWT_LIFETIME },
     );
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       msg: `${user.username} successfully logged in`,
       token,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });

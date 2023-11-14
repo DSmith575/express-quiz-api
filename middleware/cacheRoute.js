@@ -1,3 +1,14 @@
+/**
+ * @description Caching functionality
+ * @file cacheRoute.js
+ *
+ * @author Deacon Smith
+ *
+ * @created 13/11/2023
+ * @updated 14/11/2023
+ *
+ */
+
 import NodeCache from 'node-cache';
 
 // Create a new cache instance with a 5-minute Time to Live (stdTTL) and a 310-second check period

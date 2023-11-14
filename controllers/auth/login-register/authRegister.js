@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
 import genUuidSeed from '../../../utils/userRegister/registeruuid.js';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
 
 const PROFILE_URL = process.env.USER_PROFILE_PIC;
 
@@ -24,7 +25,7 @@ const register = async (req, res) => {
     });
 
     if (user) {
-      return res.status(409).json({
+      return res.status(statCodes.CONFLICT).json({
         statusCode: res.statusCode,
         msg: 'Username or Email already exists',
       });
@@ -52,13 +53,13 @@ const register = async (req, res) => {
 
     delete user.password;
 
-    return res.status(201).json({
+    return res.status(statCodes.CREATED).json({
       statusCode: res.statusCode,
       msg: 'User successfully created',
       data: user,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });

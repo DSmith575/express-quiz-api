@@ -23,6 +23,7 @@
     "prefer-destructuring": "off",
     "no-await-in-loop": "off",
     "object-shorthand": "off",
+    "no-else-return": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

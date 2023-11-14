@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import globalConst from '../../../utils/consonants/globalConsonants.js';
 import checkQuizDates from '../../../utils/dateTime/dateComparison.js';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
 
 const prisma = new PrismaClient();
 
@@ -16,10 +17,12 @@ const joinQuiz = async (req, res) => {
 
     // Unable to properly get Joi validation working for date comparisons via answering a question
     const { status, msg } = checkQuizDates(startDate, endDate);
-    if (status === globalConst.QUIZ_DATE_CHECK.started || status === globalConst.QUIZ_DATE_CHECK.ended) {
-      return res.status(200).json({
+
+    // checks the status and returns the correct msg for quiz start end date comparison for joining a quiz
+    if (status === globalConst.QUIZ_DATE_CHECK.notStarted || status === globalConst.QUIZ_DATE_CHECK.ended) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
-        msg,
+        msg: msg,
       });
     }
 
@@ -31,8 +34,8 @@ const joinQuiz = async (req, res) => {
     });
 
     // Check if the userId is already in the userParticipateQuiz and is a basic user
-    if (checkParticipation && role === 'BASIC_USER') {
-      return res.status(400).json({
+    if (checkParticipation && role === globalConst.USER_ROLES.basic) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'You have already participated in this quiz',
       });
@@ -47,12 +50,12 @@ const joinQuiz = async (req, res) => {
 
     const questionList = getQuestions.questions.map((questions) => questions.question);
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       data: questionList,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,
       msg: error.message,
     });
@@ -80,25 +83,13 @@ const answerQuiz = async (req, res) => {
 
     // Unable to properly get Joi validation working for date comparisons via answering a question
     const { status, msg } = checkQuizDates(startDate, endDate);
-    if (status === globalConst.QUIZ_DATE_CHECK.started || status === globalConst.QUIZ_DATE_CHECK.ended) {
-      return res.status(200).json({
+
+    if (status === globalConst.QUIZ_DATE_CHECK.notStarted || status === globalConst.QUIZ_DATE_CHECK.ended) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg,
       });
     }
-    // if (startDate > currentDate) {
-    //   return res.status(200).json({
-    //     statusCode: res.statusCode,
-    //     msg: 'Quiz has not started',
-    //   });
-    // }
-
-    // if (endDate < currentDate) {
-    //   return res.status(200).json({
-    //     statusCode: res.statusCode,
-    //     msg: 'Quiz has already ended',
-    //   });
-    // }
 
     // check if already participated.
     const checkParticipation = await prisma.userParticipateQuiz.findFirst({
@@ -108,7 +99,7 @@ const answerQuiz = async (req, res) => {
       },
     });
 
-    if (checkParticipation && role === 'BASIC_USER') {
+    if (checkParticipation && role === globalConst.USER_ROLES.basic) {
       return res.status(403).json({
         statusCode: res.statusCode,
         msg: 'You have already participated in this quiz',
@@ -158,14 +149,14 @@ const answerQuiz = async (req, res) => {
       },
     });
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       msg: `${username} has successfully in ${quizAnswers.name}`,
       userScore: `${userCorrectAnswers}/${quizTotalQuestions}`,
       averageScore: `${averageScore}%`,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       msg: error.message,
     });
   }

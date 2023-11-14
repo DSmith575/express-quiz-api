@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
+import statCodes from '../../../utils/statusCodes/statusCode.js';
+import userRoles from '../../../utils/consonants/globalConsonants.js';
+import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
 
 const prisma = new PrismaClient();
 
@@ -12,24 +15,24 @@ const getUser = async (req, res) => {
     const { id, role } = req.user;
 
     if (!userID) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `User with the id of ${req.params.id} not found`,
       });
     }
 
-    if (role !== 'SUPER_ADMIN_USER' && id !== userID.id) {
-      return res.status(403).json({
+    if (role !== userRoles.USER_ROLES.super && id !== userID.id) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: `Not authorized to access this profile`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       data: userID,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       msg: error.message,
     });
   }
@@ -40,7 +43,7 @@ const getUsers = async (req, res) => {
     const users = await prisma.user.findMany();
 
     if (users.length === 0) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         msg: 'No users found',
       });
     }
@@ -48,17 +51,17 @@ const getUsers = async (req, res) => {
     const { role } = req.user;
 
     if (role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+      return res.status(statCodes.FORBIDDEN).json({
         msg: `Not authorized to access this route`,
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       data: users,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       msg: error.message,
     });
   }
@@ -74,19 +77,19 @@ const updateUser = async (req, res) => {
     const { username, password, ...restOfBody } = req.body;
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         msg: `No user with the id ${user.id} found`,
       });
     }
 
-    if (id !== user.id && role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    if (id !== user.id && role !== userRoles.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         msg: `You are not authorized to access this route`,
       });
     }
 
-    if (user.role === 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    if (user.role === userRoles.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         msg: `Cannot update this user`,
       });
     }
@@ -96,14 +99,14 @@ const updateUser = async (req, res) => {
     });
 
     if (currentUserExists) {
-      return res.status(409).json({
+      return res.status(statCodes.CONFLICT).json({
         msg: `Username already exists`,
       });
     }
 
+    // If a password is being updated, rehashed the new password
     if (password) {
-      const salt = await bcryptjs.genSalt();
-      const hashedPassword = await bcryptjs.hash(req.body.password, salt);
+      const hashedPassword = await saltHashPassword(req.body.password);
 
       user = await prisma.user.update({
         where: { id: Number(req.params.id) },
@@ -123,13 +126,13 @@ const updateUser = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       msg: `User ${currentUsername} successfully updated`,
       data: user,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statCodes.SERVER_ERROR).json({
       msg: error.message,
     });
   }
@@ -144,27 +147,30 @@ const deleteUser = async (req, res) => {
     const { id, role } = req.user;
 
     if (!userID) {
-      return res.status(404).json({
+      return res.status(statCodes.NOT_FOUND).json({
         statusCode: res.statusCode,
         msg: `No user found`,
       });
     }
 
-    if (id !== userID.id && role !== 'SUPER_ADMIN_USER') {
-      return res.status(403).json({
+    // Check if authenticated user has auth to delete
+    if (id !== userID.id && role !== userRoles.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: `You are not authorized to access this route`,
       });
     }
 
+    // Checks if a user is trying to delete themselves
     if (id === userID.id) {
-      return res.status(403).json({
+      return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
         msg: 'You are not able to delete yourself',
       });
     }
 
-    if (userID.role === 'SUPER_ADMIN_USER') {
+    // Check if the user being deleted is an admin and returns forbidden response
+    if (userID.role === userRoles.USER_ROLES.super) {
       return res.status(403).json({
         statusCode: res.statusCode,
         msg: `You cannot delete this user`,
@@ -175,10 +181,21 @@ const deleteUser = async (req, res) => {
       where: { id: Number(req.params.id) },
     });
 
-    return res.status(200).json({
+    return res.status(statCodes.OK).json({
       statusCode: res.statusCode,
       msg: `User ${userID.username} successfully deleted`,
     });
+  } catch (error) {
+    return res.status(statCodes.SERVER_ERROR).json({
+      statusCode: res.statusCode,
+      msg: error.message,
+    });
+  }
+};
+
+const deleteAllBasicUsers = async (req, res) => {
+  try {
+    //
   } catch (error) {
     return res.status(500).json({
       statusCode: res.statusCode,
