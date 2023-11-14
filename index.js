@@ -9,14 +9,14 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cacheRoute from './middleware/cacheRoute.js';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
 
 import auth from './routes/login-register/auth-process.js';
 import profile from './routes/users/profiles.js';
 import quiz from './routes/quizzes/quiz.js';
 import urlPath from './utils/consonants/globalConsonants.js';
-import cacheRoute from './middleware/cacheRoute.js';
-import compression from 'compression';
 
 const { PORT } = process.env;
 
@@ -34,8 +34,8 @@ app.use(cors());
 app.use(helmet());
 app.use(urlencoded({ extended: false }));
 app.use(json());
-app.use(cacheRoute);
 app.use(compression());
+app.use(cacheRoute);
 
 app.use(`${BASE_PATH}/auth`, auth);
 app.use(`${BASE_PATH}/auth/users`, profile);
