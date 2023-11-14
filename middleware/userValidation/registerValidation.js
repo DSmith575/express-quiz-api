@@ -1,3 +1,19 @@
+/**
+ * @description Joi validation registering users
+ * @file registerValidation.js
+ *
+ * @function registerFirstLastName Validation for first and last name
+ * @function registerUsername Validation for username
+ * @function registerEmail Validation for email
+ * @function registerPassword Validation for password
+ * @function confirmPassword Validation for comparing password to confirm password
+ * @function validateRegister Main Joi Object for validating registration
+ *
+ * @author Deacon Smith
+ * @created 04-11-2023
+ * @updated 15-11-2023
+ */
+
 import Joi from 'joi';
 import registerValues from '../../utils/consonants/registerConsonants.js';
 import { registerValidation, baseValidationMessages } from '../../utils/schemaMessages/joiSchemaMessages.js';

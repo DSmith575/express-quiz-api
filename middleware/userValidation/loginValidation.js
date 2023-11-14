@@ -1,3 +1,17 @@
+/**
+ * @description Joi validation users logging in
+ * @file loginValidation.js
+ *
+ * @function loginUsername Validation to check username
+ * @function loginEmail Validation to check email
+ * @function loginPassword Validation to check password
+ * @function validateLogin Main Joi object to validate fields
+ *
+ * @author Deacon Smith
+ * @created 05-11-2023
+ * @updated 15-11-2023
+ */
+
 import Joi from 'joi';
 import { baseValidationMessages, registerValidation } from '../../utils/schemaMessages/joiSchemaMessages.js';
 
