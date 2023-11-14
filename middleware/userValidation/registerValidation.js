@@ -1,41 +1,37 @@
 import Joi from 'joi';
 import registerValues from '../../utils/consonants/registerConsonants.js';
-import schemaMessages from '../../utils/schemaMessages/joiSchemaMessages.js';
-
-const registerFirstLastNameSchemaObj = Joi.string()
-  .min(registerValues.FIRST_LAST_NAME.min)
-  .max(registerValues.FIRST_LAST_NAME.max)
-  .pattern(registerValues.FIRST_LAST_NAME.pattern);
-
-const registerUsernameSchemaObj = Joi.string().min(registerValues.USERNAME.min).max(registerValues.USERNAME.max).alphanum();
-
-const emailSchemaObj = Joi.string().email({ tlds: { allow: true } });
-
-const registerPasswordSchemaObj = Joi.string()
-  .min(registerValues.PASSWORD.min)
-  .max(registerValues.PASSWORD.max)
-  .pattern(registerValues.PASSWORD.pattern);
+import { registerValidation, baseValidationMessages } from '../../utils/schemaMessages/joiSchemaMessages.js';
 
 const registerFirstLastName = (field, string) => {
-  return registerFirstLastNameSchemaObj.required().messages({
-    'string.base': schemaMessages.base(field, string),
-    'string.min': schemaMessages.min(field, registerValues.FIRST_LAST_NAME.min),
-    'string.max': schemaMessages.max(field, registerValues.FIRST_LAST_NAME.max),
-    'string.pattern.base': schemaMessages.patternAlpha(field),
-    'string.empty': schemaMessages.empty(field),
-    'any.required': schemaMessages.required(field),
-  });
+  return Joi.string()
+    .min(registerValues.FIRST_LAST_NAME.min)
+    .max(registerValues.FIRST_LAST_NAME.max)
+    .pattern(registerValues.FIRST_LAST_NAME.pattern)
+    .required()
+    .messages({
+      'string.base': baseValidationMessages.base(field, string),
+      'string.min': baseValidationMessages.min(field, registerValues.FIRST_LAST_NAME.min),
+      'string.max': baseValidationMessages.max(field, registerValues.FIRST_LAST_NAME.max),
+      'string.pattern.base': baseValidationMessages.patternAlpha(field),
+      'string.empty': baseValidationMessages.empty(field),
+      'any.required': baseValidationMessages.required(field),
+    });
 };
 
 const registerUsername = (username, string) => {
-  return registerUsernameSchemaObj.required().messages({
-    'string.base': schemaMessages.base(username, string),
-    'string.min': schemaMessages.min(username, registerValues.USERNAME.min),
-    'string.max': schemaMessages.max(username, registerValues.USERNAME.max),
-    'string.alphanum': schemaMessages.patternAlphaNum(username),
-    'string.empty': schemaMessages.empty(username),
-    'any.required': schemaMessages.required(username),
-  });
+  return Joi.string()
+    .min(registerValues.USERNAME.min)
+    .max(registerValues.USERNAME.max)
+    .alphanum()
+    .required()
+    .messages({
+      'string.base': baseValidationMessages.base(username, string),
+      'string.min': baseValidationMessages.min(username, registerValues.USERNAME.min),
+      'string.max': baseValidationMessages.max(username, registerValues.USERNAME.max),
+      'string.alphanum': registerValidation.patternAlphaNum(username),
+      'string.empty': baseValidationMessages.empty(username),
+      'any.required': baseValidationMessages.required(username),
+    });
 };
 
 // Custom validation to compare username and email
@@ -50,27 +46,33 @@ const registerEmail = (email, string, reqUsername) => {
     return helpers.error('email.unauthorized');
   };
 
-  return emailSchemaObj
+  return Joi.string()
+    .email({ tlds: { allow: true } })
     .required()
     .custom(customValidation, 'custom email validation')
     .messages({
-      'string.base': schemaMessages.base(email, string),
-      'string.email': schemaMessages.email(email),
-      'string.empty': schemaMessages.empty(email),
-      'any.required': schemaMessages.required(email),
-      'email.unauthorized': schemaMessages.unauthorizedEmail(email),
+      'string.base': baseValidationMessages.base(email, string),
+      'string.email': registerValidation.email(email),
+      'string.empty': baseValidationMessages.empty(email),
+      'any.required': baseValidationMessages.required(email),
+      'email.unauthorized': registerValidation.unauthorizedEmail(email),
     });
 };
 
 const registerPassword = (password, string) => {
-  return registerPasswordSchemaObj.required().messages({
-    'string.base': schemaMessages.base(password, string),
-    'string.min': schemaMessages.min(password, registerValues.PASSWORD.min),
-    'string.max': schemaMessages.max(password, registerValues.PASSWORD.max),
-    'string.pattern.base': schemaMessages.patternNumSpec(password),
-    'string.empty': schemaMessages.empty(password),
-    'any.required': schemaMessages.required(password),
-  });
+  return Joi.string()
+    .min(registerValues.PASSWORD.min)
+    .max(registerValues.PASSWORD.max)
+    .pattern(registerValues.PASSWORD.pattern)
+    .required()
+    .messages({
+      'string.base': baseValidationMessages.base(password, string),
+      'string.min': baseValidationMessages.min(password, registerValues.PASSWORD.min),
+      'string.max': baseValidationMessages.max(password, registerValues.PASSWORD.max),
+      'string.pattern.base': registerValidation.patternNumSpec(password),
+      'string.empty': baseValidationMessages.empty(password),
+      'any.required': baseValidationMessages.required(password),
+    });
 };
 
 const confirmPassword = (password) => {
@@ -78,8 +80,8 @@ const confirmPassword = (password) => {
     .valid(Joi.ref('password'))
     .required()
     .messages({
-      'any.only': schemaMessages.only(password),
-      'any.required': schemaMessages.required(password),
+      'any.only': baseValidationMessages.only(password),
+      'any.required': baseValidationMessages.required(password),
     });
 };
 

@@ -26,26 +26,32 @@
  * @param {string} fieldName - The name of the field being validated.
  */
 
-const validationMessages = {
+const baseValidationMessages = {
   base: (fieldName, type) => `${fieldName} should be a ${type}`,
-  email: (fieldName) => `${fieldName} format invalid`,
   min: (fieldName, min) => `${fieldName} should have a minimum length of ${min}`,
   max: (fieldName, max) => `${fieldName} should have a maximum length of ${max}`,
+  valid: (fieldName, object) => `${fieldName} must be of the following ${object}`,
   empty: (fieldName) => `${fieldName} should not be empty`,
   required: (fieldName) => `${fieldName} is required`,
   only: (fieldName) => `${fieldName} does not match`,
   patternAlpha: (fieldName) => `${fieldName} should only contain alpha characters`,
+};
+
+const registerValidation = {
+  email: (fieldName) => `${fieldName} format invalid`,
   patternAlphaNum: (fieldName) => `${fieldName} should only contain alphanumeric characters`,
   patternNumSpec: (fieldName) => `${fieldName} should contain at least one numeric and one special character`,
-  valid: (fieldName, object) => `${fieldName} must be of the following ${object}`,
+  unauthorizedEmail: (fieldName) => `${fieldName} must match the username`,
+};
+
+const quizValidation = {
   greater: (fieldName, date) =>
     `${fieldName} must be greater than ${date} and no more than 5 days and in string format YYYY-MM-DD`,
   dateMax: (fieldName) =>
     `${fieldName} must be greater than 5 days from the start date. Please make sure date is in string format YYYY-MM-DD`,
   dateMin: (fieldName) => `${fieldName} must be greater than or equal to today in string format YYYY-MM-DD`,
   format: (fieldName) => `${fieldName} must follow the format YYYY-MM-DD`,
-  unauthorizedEmail: (fieldName) => `${fieldName} must match the username`,
   quizOnly: (fieldName, values) => `${fieldName} must contain ${values}`,
 };
 
-export default validationMessages;
+export { registerValidation, quizValidation, baseValidationMessages };

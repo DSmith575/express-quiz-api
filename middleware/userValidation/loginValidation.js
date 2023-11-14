@@ -1,18 +1,18 @@
 import Joi from 'joi';
-import schemaMessages from '../../utils/schemaMessages/joiSchemaMessages.js';
+import { baseValidationMessages, registerValidation } from '../../utils/schemaMessages/joiSchemaMessages.js';
 
 const loginUsername = (username, string) => {
   return Joi.string().messages({
-    'string.base': schemaMessages.base(username, string),
-    'string.empty': schemaMessages.empty(username),
+    'string.base': baseValidationMessages.base(username, string),
+    'string.empty': baseValidationMessages.empty(username),
   });
 };
 
 const loginEmail = (email, string) => {
   return Joi.string().messages({
-    'string.base': schemaMessages.base(email, string),
-    'string.empty': schemaMessages.empty(email),
-    'string.email': schemaMessages.email(email),
+    'string.base': baseValidationMessages.base(email, string),
+    'string.empty': baseValidationMessages.empty(email),
+    'string.email': registerValidation.email(email),
   });
 };
 
@@ -20,9 +20,9 @@ const loginPassword = (password, string) => {
   return Joi.string()
     .required()
     .messages({
-      'string.base': schemaMessages.base(password, string),
-      'string.empty': schemaMessages.empty(password),
-      'any.required': schemaMessages.required(password),
+      'string.base': baseValidationMessages.base(password, string),
+      'string.empty': baseValidationMessages.empty(password),
+      'any.required': baseValidationMessages.required(password),
     });
 };
 

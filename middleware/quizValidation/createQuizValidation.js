@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import JoiDate from '@joi/date';
-import schemaMessages from '../../utils/schemaMessages/joiSchemaMessages.js';
+import { baseValidationMessages, quizValidation } from '../../utils/schemaMessages/joiSchemaMessages.js';
 import quizValues from '../../utils/consonants/quizConsonants.js';
 
 // Using @joi/date
@@ -8,22 +8,20 @@ import quizValues from '../../utils/consonants/quizConsonants.js';
 // We extend the initial Joi import to allow the @joi/date to work with it
 const JoiDates = Joi.extend(JoiDate);
 
-const quizNameSchemaObj = Joi.string()
-  .min(quizValues.QUIZ_NAME.min)
-  .max(quizValues.QUIZ_NAME.max)
-  .pattern(quizValues.QUIZ_NAME.pattern);
-
-const quizCategorySchemaObj = Joi.number().min(quizValues.CATEGORIES_MIN_MAX.min).max(quizValues.CATEGORIES_MIN_MAX.max);
-
 const quizName = (name, string) => {
-  return quizNameSchemaObj.required().messages({
-    'string.base': schemaMessages.base(name, string),
-    'string.min': schemaMessages.min(name, quizValues.QUIZ_NAME.min),
-    'string.max': schemaMessages.max(name, quizValues.QUIZ_NAME.max),
-    'string.pattern.base': schemaMessages.patternAlpha(name),
-    'string.empty': schemaMessages.empty(name),
-    'any.required': schemaMessages.required(name),
-  });
+  return Joi.string()
+    .min(quizValues.QUIZ_NAME.min)
+    .max(quizValues.QUIZ_NAME.max)
+    .pattern(quizValues.QUIZ_NAME.pattern)
+    .required()
+    .messages({
+      'string.base': baseValidationMessages.base(name, string),
+      'string.min': baseValidationMessages.min(name, quizValues.QUIZ_NAME.min),
+      'string.max': baseValidationMessages.max(name, quizValues.QUIZ_NAME.max),
+      'string.pattern.base': baseValidationMessages.patternAlpha(name),
+      'string.empty': baseValidationMessages.empty(name),
+      'any.required': baseValidationMessages.required(name),
+    });
 };
 
 const quizDifficulty = (difficulty, string) => {
@@ -32,25 +30,27 @@ const quizDifficulty = (difficulty, string) => {
     .valid(...diffArray)
     .required()
     .messages({
-      'string.base': schemaMessages.base(difficulty, string),
-      'string.empty': schemaMessages.empty(difficulty),
-      'any.only': schemaMessages.valid(difficulty, diffArray),
-      'any.required': schemaMessages.required(difficulty),
+      'string.base': baseValidationMessages.base(difficulty, string),
+      'string.empty': baseValidationMessages.empty(difficulty),
+      'any.only': baseValidationMessages.valid(difficulty, diffArray),
+      'any.required': baseValidationMessages.required(difficulty),
     });
 };
-
+// Map the categoryIDS from quizValues then turn into values of [id] name for the res message if an error occurs during categoryID
 const quizCategoryID = (category, int) => {
   const categoryIds = quizValues.CATEGORIES_ID.map((categoryId) => categoryId.id);
   const categoryNames = quizValues.CATEGORIES_ID.map((categorySet) => `[${categorySet.id}] ${categorySet.name}`);
-  return quizCategorySchemaObj
+  return Joi.number()
+    .min(quizValues.CATEGORIES_MIN_MAX.min)
+    .max(quizValues.CATEGORIES_MIN_MAX.max)
     .valid(...categoryIds)
     .required()
     .messages({
-      'number.base': schemaMessages.base(category, int),
-      'number.min': schemaMessages.min(category, quizValues.CATEGORIES_MIN_MAX.min),
-      'number.max': schemaMessages.max(category, quizValues.CATEGORIES_MIN_MAX.max),
-      'any.only': schemaMessages.valid(category, categoryNames),
-      'any.required': schemaMessages.required(category),
+      'number.base': baseValidationMessages.base(category, int),
+      'number.min': baseValidationMessages.min(category, quizValues.CATEGORIES_MIN_MAX.min),
+      'number.max': baseValidationMessages.max(category, quizValues.CATEGORIES_MIN_MAX.max),
+      'any.only': baseValidationMessages.valid(category, categoryNames),
+      'any.required': baseValidationMessages.required(category),
     });
 };
 
@@ -64,10 +64,10 @@ const quizStartDate = (date, dateType) => {
     .min(currentDate)
     .required()
     .messages({
-      'date.format': schemaMessages.format(date),
-      'date.base': schemaMessages.base(date, dateType),
-      'date.min': schemaMessages.min(dateType),
-      'any.required': schemaMessages.required(date),
+      'date.format': quizValidation.format(date),
+      'date.base': baseValidationMessages.base(date, dateType),
+      'date.min': quizValidation.dateMin(date),
+      'any.required': baseValidationMessages.required(date),
     });
 };
 
@@ -84,11 +84,11 @@ const quizEndDate = (date, dateType, startDate, reqStartDate) => {
     .max(endQuizMax)
     .required()
     .messages({
-      'date.base': schemaMessages.base(date, dateType),
-      'date.format': schemaMessages.format(date),
-      'date.greater': schemaMessages.greater(date, startDate),
-      'date.max': schemaMessages.dateMax(date),
-      'any.required': schemaMessages.required(date),
+      'date.base': baseValidationMessages.base(date, dateType),
+      'date.format': quizValidation.format(date),
+      'date.greater': quizValidation.greater(date, startDate),
+      'date.max': quizValidation.dateMax(date),
+      'any.required': baseValidationMessages.required(date),
     });
 };
 
@@ -98,10 +98,10 @@ const quizQuestionLimit = (qLimit, qLimitType) => {
     .max(quizValues.QUIZ_QUESTIONS.required)
     .required()
     .messages({
-      'number.base': schemaMessages.base(qLimit, qLimitType),
-      'number.min': schemaMessages.min(qLimit, quizValues.QUIZ_QUESTIONS.required),
-      'number.max': schemaMessages.max(qLimit, quizValues.QUIZ_QUESTIONS.required),
-      'any.required': schemaMessages.required(qLimit),
+      'number.base': baseValidationMessages.base(qLimit, qLimitType),
+      'number.min': baseValidationMessages.min(qLimit, quizValues.QUIZ_QUESTIONS.required),
+      'number.max': baseValidationMessages.max(qLimit, quizValues.QUIZ_QUESTIONS.required),
+      'any.required': baseValidationMessages.required(qLimit),
     });
 };
 
@@ -112,10 +112,10 @@ const quizType = (type, qType) => {
     .valid(...quizTypes)
     .required()
     .messages({
-      'string.base': schemaMessages.base(type, qType),
-      'string.empty': schemaMessages.empty(type),
-      'any.required': schemaMessages.required(type),
-      'any.only': schemaMessages.quizOnly(type, quizTypes),
+      'string.base': baseValidationMessages.base(type, qType),
+      'string.empty': baseValidationMessages.empty(type),
+      'any.required': baseValidationMessages.required(type),
+      'any.only': quizValidation.quizOnly(type, quizTypes),
     });
 };
 
