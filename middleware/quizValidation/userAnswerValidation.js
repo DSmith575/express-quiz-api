@@ -1,3 +1,14 @@
+/**
+ * @description Joi validation for submitting answers to a quiz
+ * @file userAnswerValidation.js
+ *
+ * @function validateAnswers Quiz answer validation
+ *
+ * @author Deacon Smith
+ * @created 13-11-2023
+ * @updated 15-11-2023
+ */
+
 import Joi from 'joi';
 import { baseValidationMessages } from '../../utils/schemaMessages/joiSchemaMessages.js';
 import quizValues from '../../utils/consonants/quizConsonants.js';

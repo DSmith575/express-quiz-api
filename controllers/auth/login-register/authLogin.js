@@ -1,3 +1,14 @@
+/**
+ * @description User login authentication
+ * @file authLogin.js
+ *
+ * @function login allows a user to login
+ *
+ * @author Deacon Smith
+ * @created 05-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';

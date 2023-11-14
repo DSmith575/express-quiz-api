@@ -1,3 +1,15 @@
+/**
+ * @description Functions to allow users to join and answer quizzes
+ * @file joinQuizzes.js
+ *
+ * @function joinQuiz Allows a user to "join" a quiz, will return a msg with questions for that quiz
+ * @function answerQuiz Allows user to submit an array format of answers for the questions provided above
+ *
+ * @author Deacon Smith
+ * @created 14-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import globalConst from '../../../utils/consonants/globalConsonants.js';
 import checkQuizDates from '../../../utils/dateTime/dateComparison.js';

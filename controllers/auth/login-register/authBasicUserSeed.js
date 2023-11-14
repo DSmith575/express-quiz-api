@@ -1,3 +1,14 @@
+/**
+ * @description allows admins to seed basic users
+ * @file authBasicUserSeed.js
+ *
+ * @function seedBasicUsers seeds a list of basic users from a github gist
+ *
+ * @author Deacon Smith
+ * @created 14-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
 import genUuidSeed from '../../../utils/userRegister/registeruuid.js';
@@ -54,7 +65,6 @@ const seedBasicUsers = async (req, res) => {
       statusCode: res.statusCode,
       msg: 'Basic users seeded successfully',
     });
-    // const registerSeed = await registerUsers.post('auth/register', ...data);
   } catch (error) {
     return res.status(statCodes.SERVER_ERROR).json({
       statusCode: res.statusCode,

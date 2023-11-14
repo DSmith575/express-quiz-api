@@ -1,3 +1,21 @@
+/**
+ * @description Joi validation for creating a quiz
+ * @file createQuizValidation.js
+ *
+ * @function quizName Quiz name validation
+ * @function quizDifficulty Quiz difficulty validation
+ * @function quizCategoryID Quiz categoryId validation
+ * @function quizStartDate Quiz start date validation
+ * @function quizEndDate Quiz end date validation
+ * @function quizQuestionLimit Quiz total questions validation
+ * @function quizType Quiz type validation
+ * @function validateQuiz Main Joi object for validating all fields
+ *
+ * @author Deacon Smith
+ * @created 06-11-2023
+ * @updated 15-11-2023
+ */
+
 import Joi from 'joi';
 import JoiDate from '@joi/date';
 import { baseValidationMessages, quizValidation } from '../../utils/schemaMessages/joiSchemaMessages.js';

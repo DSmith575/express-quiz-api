@@ -1,3 +1,15 @@
+/**
+ * @description get or getMany list of scores
+ * @file scores.js
+ *
+ * @function getScore get a list of scores by id
+ * @function getScores get a list of all scores for every quiz
+ *
+ * @author Deacon Smith
+ * @created 14-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import statCodes from '../../../utils/statusCodes/statusCode.js';
 

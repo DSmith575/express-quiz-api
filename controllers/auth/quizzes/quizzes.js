@@ -1,3 +1,20 @@
+/**
+ * @description CRUD functionality for quizzes.
+ * @file quizzes.js
+ *
+ * @function createQuiz Creates a quiz
+ * @function deleteQuiz Deletes a quiz by id
+ * @function getQuiz Gets quiz information by id
+ * @function getAllQuizzes Get a list of all quizzes
+ * @function getPastQuizzes Get a list of all past quizzes where endDate is less than current date
+ * @function getPresentQuizzes Get a list of all present quizzes where startDate is equal to, and endDate is greater than current date
+ * @function getFutureQuizzes Get a list of all future quizzes where startDate is greater than current date
+ *
+ * @author Deacon Smith
+ * @created 06-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import quizConsonants from '../../../utils/consonants/globalConsonants.js';
 import { quizCreate } from '../../../utils/axios/instance.js';

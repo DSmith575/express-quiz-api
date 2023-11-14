@@ -2,10 +2,11 @@
  * @description middleware token functionality
  * @file authRoute.js
  *
- * @author Deacon Smith
+ * @function authRote Checks if the headers contain a token. Splits and returns the token value only
  *
+ * @author Deacon Smith
  * @created 4/11/2023
- * @updated 14/11/2023
+ * @updated 15/11/2023
  *
  */
 

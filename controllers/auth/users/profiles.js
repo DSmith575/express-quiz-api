@@ -1,5 +1,19 @@
+/**
+ * @description CRUD functionality to for user information
+ * @file profiles.js
+ *
+ * @function getUser get information on a user by id
+ * @function getUsers get information on all users
+ * @function updateUser updated a users information by id
+ * @function deleteUser delete a user by id
+ * @function deleteAllBasicUsers delete all users who have the role of BASIC_USER
+ *
+ * @author Deacon Smith
+ * @created 06-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
-import bcryptjs from 'bcryptjs';
 import statCodes from '../../../utils/statusCodes/statusCode.js';
 import userRoles from '../../../utils/consonants/globalConsonants.js';
 import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';

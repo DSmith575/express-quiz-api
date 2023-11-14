@@ -1,3 +1,14 @@
+/**
+ * @description User register authentication
+ * @file authRegister.js
+ *
+ * @function register Allows a user to register
+ *
+ * @author Deacon Smith
+ * @created 05-11-2023
+ * @updated 15-11-2023
+ */
+
 import { PrismaClient } from '@prisma/client';
 import saltHashPassword from '../../../utils/userRegister/passwordUtils.js';
 import genUuidSeed from '../../../utils/userRegister/registeruuid.js';
