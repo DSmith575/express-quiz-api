@@ -15,7 +15,8 @@
     "commit": "git-cz",
     "pretty:check": "prettier --check .",
     "pretty:fix": "prettier --write .",
-    "lint": "eslint --fix --ext .js ."
+    "lint": "eslint --fix --ext .js .",
+    "prismaStudio": "prisma studio"
   },
   "repository": {
     "type": "git",
