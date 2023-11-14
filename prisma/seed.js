@@ -27,15 +27,6 @@ const main = async () => {
       });
 
       if (!existingUser) {
-        // const userData = {
-        //   firstName: superSeed.firstName,
-        //   lastName: superSeed.firstName,
-        //   username: superSeed.username,
-        //   email: superSeed.email,
-        //   password: superSeed.password,
-        //   role: superSeed.role,
-        // };
-
         const { firstName, lastName, username, email, password, role } = superSeed;
 
         const salt = await bcryptjs.genSalt();
@@ -55,6 +46,9 @@ const main = async () => {
             role,
           },
         });
+
+        console.log(`User ${superSeed.username} created successfully`)
+        
       } else {
         console.log(`User with username ${superSeed.username} or email ${superSeed.email} already exists.`);
       }
