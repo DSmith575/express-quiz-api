@@ -36,7 +36,6 @@ const register = async (req, res) => {
     // Using uuid package to generate a random seed for each user created
     const profilePictureSeed = uuidv4();
     const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
-    console.log(getUserProfilePicture);
 
     user = await prisma.user.create({
       data: {

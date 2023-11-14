@@ -10,8 +10,8 @@ const PROFILE_URL = process.env.USER_PROFILE_PIC;
 
 const main = async () => {
   try {
-    for (let i = 0; i < superAdmins.SuperAdmins.length; i++) {
-      const superSeed = superAdmins.SuperAdmins[i];
+    for (let i = 0; i < superAdmins.data.length; i++) {
+      const superSeed = superAdmins.data[i];
 
       const existingUser = await prisma.user.findFirst({
         where: {
@@ -27,26 +27,32 @@ const main = async () => {
       });
 
       if (!existingUser) {
-        const userData = {
-          firstName: superSeed.firstName,
-          lastName: superSeed.firstName,
-          username: superSeed.username,
-          email: superSeed.email,
-          password: superSeed.password,
-          role: superSeed.role,
-        };
+        // const userData = {
+        //   firstName: superSeed.firstName,
+        //   lastName: superSeed.firstName,
+        //   username: superSeed.username,
+        //   email: superSeed.email,
+        //   password: superSeed.password,
+        //   role: superSeed.role,
+        // };
+
+        const { firstName, lastName, username, email, password, role } = superSeed;
 
         const salt = await bcryptjs.genSalt();
-        const hashedPassword = await bcryptjs.hash(superSeed.password, salt);
+        const hashedPassword = await bcryptjs.hash(password, salt);
 
         const profilePictureSeed = uuidv4();
         const getUserProfilePicture = `${PROFILE_URL}?seed=${profilePictureSeed}`;
 
         await prisma.user.create({
           data: {
-            ...userData,
+            firstName,
+            lastName,
+            username,
+            email,
             password: hashedPassword,
             avatar: getUserProfilePicture,
+            role,
           },
         });
       } else {

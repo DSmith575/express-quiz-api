@@ -20,6 +20,8 @@
     "consistent-return": "off",
     "prettier/prettier": 2,
     "no-plusplus": "off",
+    "prefer-destructuring": "off",
+    "no-await-in-loop": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
