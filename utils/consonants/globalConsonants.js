@@ -24,6 +24,7 @@ const QUIZ_AVERAGE = {
 const QUIZ_DATE_CHECK = {
   notStarted: 'quizNotStarted',
   ended: 'quizEnded',
+  ongoing: 'onGoing',
 };
 
 export default { USER_ROLES, INDEX_PATHS, QUIZ_AVERAGE, QUIZ_DATE_CHECK };

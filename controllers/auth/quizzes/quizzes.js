@@ -186,10 +186,14 @@ const getQuiz = async (req, res) => {
     // Using reduce to get the total number of each users score
     // Then getting the average with the userAverage / the length of the userQuiz scores
     // Using floor and using the average / totalQuestions * the calculated average const (100)
-    const getUserAverage = findQuiz.userQuizScores.reduce((cur, val) => cur + val.score, 0);
-    const averageScore = getUserAverage / findQuiz.userQuizScores.length;
-    const allUserAverageScore = `${Math.floor((averageScore / totalQuestions) * quizConsonants.QUIZ_AVERAGE.calculate)}%`;
 
+    let allUserAverageScore;
+
+    if (!findQuiz.userQuizScores) {
+      const getUserAverage = findQuiz.userQuizScores.reduce((cur, val) => cur + val.score, 0);
+      const averageScore = getUserAverage / findQuiz.userQuizScores.length;
+      allUserAverageScore = `${Math.floor((averageScore / totalQuestions) * quizConsonants.QUIZ_AVERAGE.calculate)}%`;
+    }
     // get a list of userIds and their score for the quiz
     const getAllUserScores = findQuiz.userQuizScores.map((score) => ({
       userId: score.userId,
@@ -198,11 +202,15 @@ const getQuiz = async (req, res) => {
 
     // Get the overall winner of the quiz sorting scores from highest to lowest
     const getHighestScore = getAllUserScores.sort((a, b) => b.score - a.score);
+    let getHighestScoreUsername;
 
     // using the userId from get highest score to return the username for overall winner
-    const getHighestScoreUsername = await prisma.user.findFirst({
-      where: { id: Number(getHighestScore[0].userId) },
-    });
+    if (getHighestScore.length > 0 && getHighestScore[0].userId) {
+      getHighestScoreUsername = await prisma.user.findFirst({
+        where: { id: Number(getHighestScore[0].userId) },
+      });
+      getHighestScoreUsername = getHighestScoreUsername.username;
+    }
 
     // Custom return object just for displaying information in a certain order
     const quizInformation = {
@@ -215,7 +223,7 @@ const getQuiz = async (req, res) => {
       endDate: findQuiz.endDate,
       totalQuestions,
       allUserAverageScore,
-      overallWinner: getHighestScoreUsername.username,
+      overallWinner: getHighestScoreUsername,
       quizQuestions,
       scores: findQuiz.userQuizScores,
     };

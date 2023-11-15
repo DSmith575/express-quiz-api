@@ -30,11 +30,10 @@ const joinQuiz = async (req, res) => {
     // Unable to properly get Joi validation working for date comparisons via answering a question
     const { status, msg } = checkQuizDates(startDate, endDate);
 
-    // checks the status and returns the correct msg for quiz start end date comparison for joining a quiz
     if (status === globalConst.QUIZ_DATE_CHECK.notStarted || status === globalConst.QUIZ_DATE_CHECK.ended) {
       return res.status(statCodes.FORBIDDEN).json({
         statusCode: res.statusCode,
-        msg: msg,
+        msg,
       });
     }
 

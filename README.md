@@ -41,8 +41,6 @@ If you are using a version of node that does not have this option, you will need
 ### npm Setup <a name="npm-setup"/>
 From the root directory of the project  
 `npm install`
-After installation run  
-`npm run generate`
 
 ### env Setup <a name="env-setup"/>
 Add a .env to root directory  
@@ -57,6 +55,11 @@ PORT=3000
 JWT_SECRET=Pazzw0rd
 JWT_LIFETIME=1hr
 ```
+
+### Database setup <a name="database-setup"/>
+After `npm install`  
+run `npm run generate`
+and then `npm run migrate`
 
 ## Local Environment <a name="local"/>
 To run the local environment, in your terminal run `npm run dev`  

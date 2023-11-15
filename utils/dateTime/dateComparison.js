@@ -26,6 +26,11 @@ const checkQuizDates = (startDate, endDate) => {
       msg: 'Quiz has already ended',
     };
   }
+
+  return {
+    status: quizDates.QUIZ_DATE_CHECK.ongoing,
+    msg: 'Quiz is currently ongoing',
+  };
 };
 
 export default checkQuizDates;
