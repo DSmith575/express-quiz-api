@@ -209,7 +209,34 @@ const deleteUser = async (req, res) => {
 
 const deleteAllBasicUsers = async (req, res) => {
   try {
-    //
+    const getBasicUsers = await prisma.user.findMany({
+      where: { role: String(userRoles.USER_ROLES.basic) },
+    });
+
+    const { role } = req.user;
+
+    if (role !== userRoles.USER_ROLES.super) {
+      return res.status(statCodes.FORBIDDEN).json({
+        statusCode: res.statusCode,
+        msg: `You are not authorized to access this route`,
+      });
+    }
+
+    if (getBasicUsers.length === 0) {
+      return res.status(statCodes.NOT_FOUND).json({
+        statusCode: res.statusCode,
+        msg: `No basic users found`,
+      });
+    }
+
+    await prisma.user.deleteMany({
+      where: { role: String(userRoles.USER_ROLES.basic) },
+    });
+
+    return res.status(statCodes.OK).json({
+      statusCode: res.statusCode,
+      msg: `Basic users successfully deleted`,
+    });
   } catch (error) {
     return res.status(500).json({
       statusCode: res.statusCode,
@@ -218,4 +245,4 @@ const deleteAllBasicUsers = async (req, res) => {
   }
 };
 
-export { getUser, getUsers, updateUser, deleteUser };
+export { getUser, getUsers, updateUser, deleteUser, deleteAllBasicUsers };

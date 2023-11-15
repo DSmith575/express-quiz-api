@@ -13,11 +13,13 @@ import registerValidate from '../../middleware/userValidation/registerValidation
 import loginValidate from '../../middleware/userValidation/loginValidation.js';
 import auth from '../../middleware/authRoute.js';
 import seedBasicUsers from '../../controllers/auth/login-register/authBasicUserSeed.js';
+import { deleteAllBasicUsers } from '../../controllers/auth/users/profiles.js';
 
 const router = express.Router();
 
 router.route('/register').post(registerValidate, register);
 router.route('/login').post(loginValidate, login);
 router.route('/seed-basic-users').post(auth, seedBasicUsers);
+router.route('/delete-basic-users').delete(auth, deleteAllBasicUsers);
 
 export default router;
