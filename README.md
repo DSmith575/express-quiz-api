@@ -92,6 +92,15 @@ To fix any code styling run `npm run pretty:fix`
 To check and format code for errors run `npm run lint`
 
 ## Postman Documentation <a name="postman"/>
+A JSON file containing a postman collection for registering and end points is available in the postManCollection directory.  
+
+In postman click import, and drag/browser to the collection jsonfile.  
+
+![Alt text](<./screenshots/postman import.png>)
+
+Right click the collection and click `View documentation`
+
+![Alt text](./screenshots/viewDoc.png)
 
 ## Example requests <a name="examples"/>
 
