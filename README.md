@@ -17,6 +17,8 @@
 - [Prettier/Eslint](#pre-lint)
 - [Postman Documentation](#postman)
 - [Examples](#examples)
+    + [register user](#register)
+    + [create quiz](#quiz-create)
 - [References](#ref)
 
 ## About <a name="about"/>
@@ -92,6 +94,27 @@ To check and format code for errors run `npm run lint`
 ## Postman Documentation <a name="postman"/>
 
 ## Example requests <a name="examples"/>
+
+### Register User (Postman) <a name="register"/>
+```js
+"firstName": "example",
+"lastName": "example",
+"username": "example",
+"email": "example@example.com",
+"password": "example123!",
+"confirmPassword:" "example123!"
+```
+
+### Create Quiz (Postman) <a name="quiz-create"/>
+```js
+"name": "exampleQuiz",
+"difficulty": "easy",
+"categoryId": 9,
+"startDate": "YYYY-MM-DD",
+"endDate": "YYYY-MM-DD",
+"totalQuestions": 10,
+"type": "multiple"
+```
 
 ## References <a name="ref"/>
 
