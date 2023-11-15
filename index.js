@@ -68,7 +68,7 @@ app.get(`${BASE_PATH}`, (req, res) => {
       `[GET] ${BASE_PATH}/auth/quizzes/scores`,
       `[GET] ${BASE_PATH}/auth/quizzes/{id}/scores`,
       `[POST] ${BASE_PATH}/auth/seed-basic-users`,
-      `[POST] ${BASE_PATH}/auth/delete-basic-users`,
+      `[DELETE] ${BASE_PATH}/auth/delete-basic-users`,
     ],
   });
 });

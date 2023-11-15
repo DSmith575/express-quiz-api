@@ -20,9 +20,7 @@ const registerSuite = {
   firstName: 'testSuite',
   lastName: 'testSuite',
   username: 'tester',
-  emailFalse: 'test@test.com',
-  emailCorrect: 'tester@test.com',
-  passwordNoSpec: 'test1234',
+  email: 'tester@test.com',
   password: 'test123!',
   confirmPassword: 'test123!',
 };
@@ -66,7 +64,7 @@ describe('register basic user', () => {
       });
   });
 
-  it('should test if firstName is a string', (done) => {
+  it('should test if First name is a string', (done) => {
     chai
       .request(app)
       .post(`${REGISTER_PATH}`)
@@ -134,29 +132,101 @@ describe('register basic user', () => {
       });
   });
 
-  // it('should return a message email is required', (done) => {
-  //   chai
-  //     .request(app)
-  //     .post(`${REGISTER_PATH}`)
-  //     .send(username)
-  //     .end((req, res) => {
-  //       chai.expect(res.status).to.be.equal(400);
-  //       chai.expect(res.body).to.be.a('object');
-  //       chai.expect(res.body.msg).to.be.equal('Email is required');
-  //       done();
-  //     });
-  // });
+  it('should return a message email is required', (done) => {
+    const { firstName, lastName, username } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Email is required');
+        done();
+      });
+  });
 
-  // it('should return message email must match username', (done) => {
-  //   chai
-  //     .request(app)
-  //     .post(`${REGISTER_PATH}`)
-  //     .send(email)
-  //     .end((req, res) => {
-  //       chai.expect(res.status).to.be.equal(400);
-  //       chai.expect(res.body).to.be.a('object');
-  //       chai.expect(res.body.msg).to.be.equal('Email must match the username');
-  //       done();
-  //     });
-  // });
+  it('should return a message email must match username', (done) => {
+    const { firstName, lastName, username } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email: 'incorrect@test.com' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Email must match the username');
+        done();
+      });
+  });
+
+  it('should return a message email invalid format', (done) => {
+    const { firstName, lastName, username } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email: 'tester@test' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Email format invalid');
+        done();
+      });
+  });
+
+  it('should return a message password must have min length of 8', (done) => {
+    const { firstName, lastName, username, email } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email, password: 'a' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Password should have a minimum length of 8');
+        done();
+      });
+  });
+
+  it('should return a message password must have min length of 16', (done) => {
+    const { firstName, lastName, username, email } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email, password: 'qwertyqwertyqwertyqwerty' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Password should have a maximum length of 16');
+        done();
+      });
+  });
+
+  it('should check if password contains a numeric or special character', (done) => {
+    const { firstName, lastName, username, email } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email, password: 'password' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Password should contain at least one numeric and one special character');
+        done();
+      });
+  });
+
+  it('should check if confirm password matches password', (done) => {
+    const { firstName, lastName, username, email, password } = registerSuite;
+    chai
+      .request(app)
+      .post(`${REGISTER_PATH}`)
+      .send({ firstName, lastName, username, email, password, confirmPassword: 'incorrectPassword' })
+      .end((req, res) => {
+        chai.expect(res.status).to.be.equal(400);
+        chai.expect(res.body).to.be.a('object');
+        chai.expect(res.body.msg).to.be.equal('Confirm Password does not match');
+        done();
+      });
+  });
 });
