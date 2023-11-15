@@ -77,7 +77,8 @@ Once you have `generated` and created your prisma database
 Run `npm run seed` To seed a list of super admin users
 
 ## Running test suite <a name="test-suite"/>
-To run the mocha and chai test suite run `npm run test`
+To run the mocha and chai test suite run `npm run test`  
+**NOTE:** You must have a database and have seeded super admins for quizTesting to work
 
 ## Prettier/Eslint <a name="pre-lint"/>
 

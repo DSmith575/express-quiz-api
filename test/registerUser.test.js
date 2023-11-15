@@ -25,7 +25,7 @@ const registerSuite = {
   confirmPassword: 'test123!',
 };
 
-describe('register basic user', () => {
+describe('Test register validation', () => {
   it('should return message First name is required', (done) => {
     chai
       .request(app)
