@@ -64,7 +64,7 @@ const getUsers = async (req, res) => {
 
     const { role } = req.user;
 
-    if (role !== 'SUPER_ADMIN_USER') {
+    if (role !== userRoles.USER_ROLES.super) {
       return res.status(statCodes.FORBIDDEN).json({
         msg: `Not authorized to access this route`,
       });
