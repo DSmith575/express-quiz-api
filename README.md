@@ -1,4 +1,4 @@
-# Table of Conetnts
+# Table of Contents
 
 - [About](#about)
 - [Important](#important)
